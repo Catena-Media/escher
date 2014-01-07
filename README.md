@@ -1,4 +1,4 @@
-escher
+Escher
 ======
 
-A lightweight PHP framework
+A lightweight PHP framework.
