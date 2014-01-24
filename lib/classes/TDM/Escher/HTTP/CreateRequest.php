@@ -212,8 +212,6 @@ class CreateRequest
             return $this->connect($specification, $connectionTimeout);
         }
 
-        // Update the timeout
-        stream_set_timeout($connections[$specification], $this->defaultReadTimeout);
         return $connections[$specification];
     }
 
@@ -251,6 +249,7 @@ class CreateRequest
             'protocol_version' => $this->defaultHTTPVersion,
             'method'           => strtoupper($method),
             'timeout'          => $this->defaultTimeout,
+            'read_timeout'     => $this->defaultReadTimeout,
             'ignore_errors'    => true,
             'max_retries'      => $this->maxTimeoutRetries,
         );
@@ -288,6 +287,7 @@ class CreateRequest
 
         // Connect to the remote server
         $socket = $this->connect($socketSpecification, $options["timeout"]);
+        stream_set_timeout($socket, $options["read_timeout"]);
 
         // Build the request string
         $requestString = $this->createRequestString($url, $headers, $options);
