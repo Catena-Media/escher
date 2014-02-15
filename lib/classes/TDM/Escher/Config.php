@@ -53,7 +53,7 @@ class Config extends Singleton
 {
     public function __construct()
     {
-        // Read the YAML file
+        // Read the INI file
         $configFile = realpath(dirname($_SERVER["SCRIPT_FILENAME"])) . '/config.ini';
         if (!is_readable($configFile)) {
             trigger_error("Expected config file at " . $configFile);
