@@ -51,7 +51,7 @@ namespace TDM\Escher;
  * @copyright   2006-2014 Twist Digital Media
  */
 
-class Template
+class Template extends Singleton
 {
     /**
      * Will remove any special HTML styled comments found in the templte files
@@ -135,27 +135,8 @@ class Template
      **/
     public static function &instance($new = false)
     {
-        // Get the name of this class
-        $className = get_called_class();
-
-        if ($new) {
-
-            // Just a straight new template
-            $template = new $className();
-
-        } else {
-
-            // Use a static template
-            static $template;
-            if ($template instanceof $className) {
-
-                // Template exists, use singleton
-                return $template;
-            }
-
-            // Create a fresh template
-            $template = new $className();
-        }
+        // Get a singleton
+        $template = parent::instance($new);
 
         // Add in the global vars
         if (!empty($GLOBALS['templateGlob'])) {
