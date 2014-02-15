@@ -4,11 +4,12 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "grunt": "~0.4.*",
-    "grunt-contrib-sass": "~0.6.0",
-    "grunt-contrib-cssmin": "~0.7.0",
-    "grunt-contrib-uglify": "~0.2.7",
-    "grunt-contrib-concat": "~0.3.0"
+    "gulp": "~3.5.2",
+    "gulp-util": "~2.2.14",
+    "gulp-concat": "~2.1.7",
+    "gulp-autoprefixer": "~0.0.6",
+    "gulp-minify-css": "~0.3.0",
+    "gulp-uglify": "~0.2.1"
   },
   "license": "All Rights Reserved"
 }
