@@ -881,15 +881,29 @@ class Template extends Singleton
                     $variableValue = call_user_func($variableValue);
                 }
 
-                // Replace the variables (with masks if needed)
+                // Variables enclosed in {{}} should be replaced raw.
                 $code = preg_replace_callback(
-                    '/{(' . $variableName . ')(\\[(\\w+)\\])?}/',
+                    '/{{(' . $variableName . ')(\\[(\\w+)\\])?}}/',
                     function ($matches) use ($variableValue) {
                         if (isset($matches[3])) {
                             return $this->maskReplace($matches[3], $variableValue);
                         }
 
                         return $variableValue;
+                    },
+                    $code
+                );
+
+                // Variables enclosed in {} should be escaped first.
+                $code = preg_replace_callback(
+                    '/{(' . $variableName . ')(\\[(\\w+)\\])?}/',
+                    function ($matches) use ($variableValue) {
+                        $safeValue = htmlspecialchars($variableValue);
+                        if (isset($matches[3])) {
+                            return $this->maskReplace($matches[3], $safeValue);
+                        }
+
+                        return $safeValue;
                     },
                     $code
                 );
