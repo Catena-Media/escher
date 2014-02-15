@@ -18,9 +18,8 @@ use \YourCompany\YourProject as YourProject;
  *
  * Handles homepage requests
  *
- * @copyright 2014 Twist Digital Media
- * @author    Mike Hall <mike.hall@twistdigital.co.uk>
- * @author    Wez Pyke <wez.pyke@twistdigital.co.uk>
+ * @copyright 2014 Your Company
+ * @author    You <you@example.com>
  */
 class Homepage extends Escher\Presenter
 {
