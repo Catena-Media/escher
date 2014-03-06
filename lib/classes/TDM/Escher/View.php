@@ -71,6 +71,6 @@ abstract class View
 
     public function assign(Array $data, $namespace = null)
     {
-        $template->assign($data, $namespace ?: $namespace);
+        $this->template->assign($data, $namespace ?: $namespace);
     }
 }
