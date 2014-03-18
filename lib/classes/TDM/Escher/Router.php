@@ -44,174 +44,253 @@ namespace TDM\Escher;
  *
  * A really simple router
  *
- * @author      Claire Patterson <claire.patterson@twistdigital.co.uk>
  * @author      Mike Hall <mike.hall@twistdigital.co.uk>
  * @copyright   2014 Twist Digital Media
  */
 
 class Router
 {
-    // this is where the route maps live
-    public $staticRoutes   = [];
-    public $wildcardRoutes = [];
+    // Static routes are stored in here, in the format ["GET"]["/"] = $callback
+    private $fastRoutes   = [];
 
-    private function normalizeUrl($url)
-    {
-        return '/' . strtolower(trim($url, '/'));
-    }
+    // Slower, wildcard, routes are stored in these variables
+    private $slowRoutes   = [];
+    private $routeRegexes = [];
 
-    private function normalizeMethod($method)
+    // This determines how many regex routes we check at once. Too big and
+    // we use a load of memory. Too small and we hit the PCRE engine too often.
+    // A chunk size of 10 seems to be a happy medium.
+    public $chunkSize = 10;
+
+    /**
+     * Sanitise the HTTP verb.
+     *
+     * If the passed verb is POST, it returns POST. Otherwise, it returns GET. Escher\Router only
+     * supports POST and GET verbs. We could do others, I suppose? But is there really a point for
+     * a browser-based application framework?
+     *
+     * @param String $method The method to clean
+     * @return String A valid HTTP method
+     */
+    private function cleanMethod($method)
     {
         $method = strtoupper($method);
-        if ($method !== "POST") {
-            return "GET";
+        if ($method === "POST") {
+            return "POST";
         }
-        return "POST";
+        return "GET";
     }
 
-    private function map($url, $route, &$table)
+    /**
+     * Convert placeholders to regex format
+     *
+     * Translates the [:any]-style route placeholders into regex so we can use it for matching.
+     *
+     * @param String $path The path to translate
+     * @return String The translated path
+     */
+    private function convertPathToRegex($path)
     {
-        // Normalize the URL
-        $url = $this->normalizeUrl($url);
+        return strtr($path, array(
+            '[:any]'   => '([^/]+)',
+            '[:all]'   => '([^/]+)',
+            '[:num]'   => '([0-9]+)',
+            '[:nonum]' => '([^0-9]+)',
+            '[:alpha]' => '([A-Za-z]+)',
+            '[:alnum]' => '([A-Za-z0-9]+)',
+            '[:hex]'   => '([A-Fa-f0-9]+)',
+        ));
+    }
 
-        // If this is a simple route, store it
-        if (is_callable($route, YES)) {
-            $table[$url] = $route;
+    /**
+     * Register a wildcard route
+     *
+     * Registers a wildcare route in the routing table, and stores the regex
+     * in an equivalent position in the regex table.
+     *
+     * @param String $method The HTTP-verb
+     * @param String $path The path to register
+     * @param Callable $callback The function/method to run for this route
+     * @return void
+     */
+    private function registerWildcardRoute($method, $path, $callback)
+    {
+        // Translate to regex format
+        $regex = $this->convertPathToRegex($path);
+
+        // Add the regex into the regex table
+        $this->routeRegexes[$method][] = $regex;
+
+        // Add the callback to the slow route table
+        $this->slowRoutes[$method][]   = $callback;
+    }
+
+    /**
+     * Compile a regex statement
+     *
+     * Compile a list of regular expressions into a single regex chunk
+     * and mark each chunk with a number of empty "dummy" groups at the
+     * end of the expression. We can count these dummy groups later to find out
+     * which of the expressions matched, and therefore where we should be routing.
+     *
+     * @param Array $chunk List of paths to match, in regex format
+     * @return String Compiled regular expression
+     */
+    private function compileRegexChunk($chunk)
+    {
+        $compiled = '#^(?|';
+        foreach ($chunk as $i => $regex) {
+            $compiled .= $regex . str_repeat("()", $i) . "|";
+        }
+        $compiled = rtrim($compiled, "|") . ")$#x";
+        return $compiled;
+    }
+
+    /**
+     * Search the slow routing table
+     *
+     * Searches the slow routing table for a match for the passed method and path
+     * In the event that one is found, it returns the callback to run. Otherwise,
+     * it return false.
+     *
+     * @param String $method The HTTP-verb to check (or * for generic)
+     * @param String $path The path to check
+     * @return Callable A route, or false on no match
+     */
+    private function searchWildcardRoutes($method, $path)
+    {
+        // If there are no entries in this routing table at all, there
+        // is no point in checking it.
+        if (!isset($this->routeRegexes[$method])) {
+            return false;
+        }
+
+        // Get the list of regex routes for this method, and split it up into chunks
+        $regexes = array_chunk($this->routeRegexes[$method], $this->chunkSize);
+        foreach ($regexes as $tens => $chunk) {
+
+            // Merge this chunk into a single regex expression
+            // and test it. If there is no match, try the next chunk.
+            $regex = $this->compileRegexChunk($chunk);
+            if (!preg_match($regex, $path, $matches)) {
+                continue;
+            }
+
+            // Great we have a match. Ditch the first group, as this
+            // simply contains the full match, which we don't care about.
+            array_shift($matches);
+
+            // To locate the right route, we count the number of "dummy"
+            // empty matches we have at the end of the match array.
+            // Combining this number with the chunk number we are on, gives us
+            // the array offset of the callback in the slowRoutes table.
+            $matches = array_reverse($matches);
+            for ($dummyMatches = 0; "" === $matches[$dummyMatches]; $dummyMatches += 1) {
+                // Nothing to do in here.
+            }
+
+            // What's left in the matches array will be the arguments to pass into the callback
+            $matches = array_reverse(array_slice($matches, $dummyMatches));
+
+            // Find which route this was - by taking into account how many chunks
+            // we have and how many dummy matches there were.
+            $routeNumber = ($tens * $this->chunkSize) + $dummyMatches;
+            $route = $this->slowRoutes[$method][$routeNumber];
+
+            // Return a callback to execute the route, with parameters
+            return function () use ($route, $matches) {
+                call_user_func_array($route, $matches);
+            };
+        }
+
+        // No matches found
+        return false;
+    }
+
+    /**
+     * Specifies a route to map to a request
+     *
+     * Takes either ($path, $callback) or ($method, $path, $callback)
+     * and adds to the routing tables so we can route the request later.
+     *
+     * @param String $method The HTTP verb
+     * @param String $path The path for this route
+     * @param Callable $callback Where we route to
+     * @return void
+     */
+    public function map()
+    {
+        // Variable number of arguments means we have to parse them out manually.
+        $arguments = func_get_args();
+
+        // Two arguments means we got ($path, $callback)
+        if (sizeof($arguments) === 2) {
+            $method   = "*";
+            $path     = strtolower(array_shift($arguments));
+            $callback = array_shift($arguments);
+
+        // Three arguments means we got ($method, $path, $callback)
+        } elseif (sizeof($arguments === 3)) {
+            $method   = $this->cleanMethod(array_shift($arguments));
+            $path     = strtolower(array_shift($arguments));
+            $callback = array_shift($arguments);
+        }
+
+        // If the path contains a [ character, then we consider it to
+        // be a wildcard route, which means it uses regular expressions
+        // for parsing. If not, it's a static route. We should use static
+        // routes where possible, as they're much faster.
+        $isStaticRoute = strpos($path, "[") === false;
+
+        // If this is a static route, just add it to the routing
+        // table and we are already done.
+        if ($isStaticRoute) {
+            $this->fastRoutes[$method][$path] = $callback;
             return;
         }
 
-        // If this is a complex route, validate it and store it
-        if (is_array($route)) {
-            foreach ($route as $method => $path) {
-                $method = $this->normalizeMethod($method);
-                if (is_callable($path, YES)) {
-                    $table[$url][$method] = $path;
-                }
-            }
-            return;
-        }
+        // Otherwise, we need to translate route into PCRE and store it
+        // in the slower routing table.
+        $this->registerWildcardRoute($method, $path, $callback);
     }
 
-    public function addStaticRoute($url, $route)
+    /**
+     * Route a request
+     *
+     * Takes a method and a path, and returns an appropriate callback.
+     *
+     * @param String $method The HTTP-verb to check
+     * @param String $path The path to check
+     * @param Callable An appropriate callback for this route
+     */
+    public function route($method, $path)
     {
-        return $this->map($url, $route, $this->staticRoutes);
-    }
-
-    public function addWildcardRoute($url, $route)
-    {
-        return $this->map($url, $route, $this->wildcardRoutes);
-    }
-
-    private function unmap($url, $method, &$table)
-    {
-        $url = $this->normalizeUrl($url);
-        if (isset($table[$url])) {
-
-            // Simple routes, or empty methods, just removes the lot
-            if (is_scalar($table[$url]) || is_null($method)) {
-                unset($table[$url]);
-                return;
-            }
-
-            // Just remove this method
-            $method = $this->normalizeMethod($method);
-            if (isset($table[$url][$method])) {
-                unset($table[$url][$method]);
-                return;
-            }
-        }
-    }
-
-    public function removeStaticRoute($url, $method = null)
-    {
-        return $this->unmap($url, $method, $this->staticRoutes);
-    }
-
-    public function removeWildcardRoute($url, $method = null)
-    {
-        return $this->unmap($url, $method, $this->wildcardRoutes);
-    }
-
-    public function route($url, $method = "GET")
-    {
-        // get request method
-        $method = $this->normalizeMethod($method);
-
-        // normalize the url
-        $url = $this->normalizeUrl($url);
-        return $this->match($url, $method);
-    }
-
-    private function match($url, $method)
-    {
-        // check for a direct match in route table
-        if (isset($this->staticRoutes[$url])) {
-
-            // if there is a single entry and it matches the route table just return
-            if (is_scalar($this->staticRoutes[$url])) {
-                return array(
-                    "callable"  => $this->staticRoutes[$url],
-                    "arguments" => [],
-                );
-            }
-
-            // check if there is a specific route for this method
-            if (isset($this->staticRoutes[$url][$method])) {
-                return array(
-                    "callable"  => $this->staticRoutes[$url][$method],
-                    "arguments" => [],
-                );
-            }
-
-            // nothing matched? nothing to give you
-            return ["callable" => null, "arguments" => []];
+        // Check for static routes for this method
+        if (isset($this->fastRoutes[$method][$path])) {
+            return $this->fastRoutes[$method][$path];
         }
 
-        // we didn't find a direct match
-        // check for routes with variables
-        foreach ($this->wildcardRoutes as $wildcard => $route) {
-
-            // Convert wild-cards to regex
-            $regex = strtr($wildcard, array(
-                ':any'   => '[^/]+',
-                ':num'   => '[0-9]+',
-                ':nonum' => '[^0-9]+',
-                ':alpha' => '[A-Za-z]+',
-                ':alnum' => '[A-Za-z0-9]+',
-                ':hex'   => '[A-Fa-f0-9]+',
-            ));
-
-            // Does the RegEx match?
-            if (preg_match('#^' . $regex . '$#', $url, $matches)) {
-
-                // take off the full match
-                array_shift($matches);
-
-                // If this is a simple route, just return it
-                if (is_scalar($route)) {
-                    return array(
-                        "callable" => $route,
-                        "arguments" => $matches,
-                    );
-                }
-
-                // Otherwise, check the method
-                if (isset($route[$method])) {
-                    return array(
-                        "callable"  => $route[$method],
-                        "arguments" => $matches,
-                    );
-                }
-
-                // Route matched, but method did not.
-                return array(
-                    "callable" => function ($status) {
-                        HTTP\StatusCode::returnCode($status);
-                        exit;
-                    },
-                    "arguments" => [405],
-                );
-            }
+        // Check for a generic static route
+        if (isset($this->fastRoutes["*"][$path])) {
+            return $this->fastRoutes["*"][$path];
         }
+
+        // Check for a wildcard route for this method
+        $route = $this->searchWildcardRoutes($method, $path);
+        if (is_callable($route)) {
+            return $route;
+        }
+
+        // Check for a generic wildcard route
+        $route = $this->searchWildcardRoutes("*", $path);
+        if (is_callable($route)) {
+            return $route;
+        }
+
+        // Cannot route this request - return a not found
+        return function () {
+            HTTP\StatusCode::returnCode(404);
+            exit;
+        };
     }
 }
