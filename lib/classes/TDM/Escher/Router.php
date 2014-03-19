@@ -195,11 +195,19 @@ class Router
             // Find which route this was - by taking into account how many chunks
             // we have and how many dummy matches there were.
             $routeNumber = ($tens * $this->chunkSize) + $dummyMatches;
-            $route = $this->slowRoutes[$method][$routeNumber];
 
             // Return a callback to execute the route, with parameters
-            return function () use ($route, $matches) {
-                call_user_func_array($route, $matches);
+            if (isset($this->slowRoutes[$method][$routeNumber])) {
+                $route = $this->slowRoutes[$method][$routeNumber];
+                return function () use ($route, $matches) {
+                    call_user_func_array($route, $matches);
+                };
+            }
+            
+            // Failed to route this request
+            return function () {
+                HTTP\StatusCode::returnCode(500);
+                exit;
             };
         }
 
@@ -234,6 +242,11 @@ class Router
             $method   = $this->cleanMethod(array_shift($arguments));
             $path     = strtolower(array_shift($arguments));
             $callback = array_shift($arguments);
+            
+        // Anything else is an error
+        } else {
+            trigger_error("Invalid number of parameters passed to Router::map", E_USER_ERROR);
+            return;
         }
 
         // If the path contains a [ character, then we consider it to
