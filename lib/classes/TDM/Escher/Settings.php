@@ -40,28 +40,28 @@
 namespace TDM\Escher;
 
 /**
- * Config
+ * Settings
  *
- * This class will import into itself all the keys it finds in the config.yml
+ * This class will import into itself all the keys it finds in the settings.ini
  * file that it finds at the root level of the application.
  *
  * @author      Mike Hall <mike.hall@twistdigital.co.uk>
  * @copyright   2014 Twist Digital Media
  */
 
-class Config extends Singleton
+class Settings extends Singleton
 {
     public function __construct()
     {
         // Read the INI file
-        $configFile = realpath(dirname($_SERVER["SCRIPT_FILENAME"])) . '/config.ini';
-        if (!is_readable($configFile)) {
-            trigger_error("Expected config file at " . $configFile);
+        $settingsFile = ROOTDIR . '/settings.ini';
+        if (!is_readable($settingsFile)) {
+            trigger_error("Expected config file at " . $settingsFile);
             return;
         }
 
         // Parse the config file
-        $config = parse_ini_file($configFile, true);
+        $config = parse_ini_file($settingsFile, true);
         foreach ($config as $key => $value) {
             $this->$key = $value;
         }

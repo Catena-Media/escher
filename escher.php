@@ -54,12 +54,12 @@ define("YES", true);
 define("NO", false);
 
 /**
- * @var string The root directory for Escher
+ * @const string The root directory for Escher
  */
-$rootdir = getcwd();
+define("ROOTDIR", getcwd());
 
 // Set the include path to seek relative to the Escher root
-set_include_path($rootdir);
+set_include_path(ROOTDIR);
 
 // Include the class autoloader
 require "lib/autoloader.php";

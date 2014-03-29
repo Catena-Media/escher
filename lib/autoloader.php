@@ -45,7 +45,7 @@
  * @param     string $className The class to load
  * @return    void
  */
-spl_autoload_register(function ($className) use ($rootdir) {
+spl_autoload_register(function ($className) {
 
     // Lose the leading slash
     $className = ltrim($className, '\\');
@@ -57,9 +57,9 @@ spl_autoload_register(function ($className) use ($rootdir) {
 
     // Raw classes (without namespace support) live in a folder called classes
     if (empty($sourcePath)) {
-        $check = $rootdir . '/lib/classes/' . $sourceFilename;
+        $check = ROOTDIR . '/lib/classes/' . $sourceFilename;
     } else {
-        $check = $rootdir . '/lib/classes/' . $sourcePath . '/' . $sourceFilename;
+        $check = ROOTDIR . '/lib/classes/' . $sourcePath . '/' . $sourceFilename;
     }
 
     // Include the file. We're done.

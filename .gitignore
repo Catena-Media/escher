@@ -1,3 +1,4 @@
-node_modules/*
-.sass-cache/*
-config.ini
+node_modules
+.sass-cache
+settings.ini
+.DS_Store

@@ -1,4 +1,4 @@
-/*jslint es5: true, browser: false, node: true, maxlen: 120 */
+/*jslint browser: false, node: true, maxlen: 120 */
 
 /**
  * Escher Framework v2.0
@@ -39,7 +39,7 @@
 
 "use strict";
 
-var gulp, gutil, minifycss, autoprefixer, uglify, concat, path, styles, scripts;
+var gulp, gutil, minifycss, autoprefixer, uglify, concat, path, svgmin, imagemin, styles, scripts, bitmaps, vectors;
 
 /**
  * Configuration stuff
@@ -53,6 +53,16 @@ styles = {
 scripts = {
     "input": "lib/javascript/**/*.js",
     "output": "public/javascript.js"
+};
+
+bitmaps = {
+    "input": ["public/**/*.png", "public/**/*.jpg", "public/**/*.jpeg", "public/**/*.gif"],
+    "output": "public"
+};
+
+vectors = {
+    "input": "public/**/*.svg",
+    "output": "public"
 };
 
 /**
@@ -72,6 +82,10 @@ minifycss = require('gulp-minify-css');
 
 // Javascript Dependencies
 uglify = require("gulp-uglify");
+
+// Image dependencies
+imagemin = require("gulp-imagemin");
+svgmin   = require("gulp-svgmin");
 
 // Use the path library to split down the config output into path and filename.
 path = require("path");
@@ -93,9 +107,28 @@ gulp.task("scripts", function () {
         .pipe(gulp.dest(path.dirname(scripts.output)));
 });
 
-// Rebuild job runs both of the above jobs
+// Optimize vector images
+gulp.task("optimize-vectors", function () {
+    return gulp.src(vectors.input)
+        .pipe(svgmin())
+        .pipe(gulp.dest(vectors.output));
+});
+
+// Optimize bitmapped images
+gulp.task("optimize-bitmaps", function () {
+    return gulp.src(bitmaps.input)
+        .pipe(imagemin())
+        .pipe(gulp.dest(bitmaps.output));
+});
+
+// Rebuild makes the styles and scripts
 gulp.task("rebuild", ["styles", "scripts"]);
-gulp.task("default", ["rebuild"]);
+
+// Optimize resizes the images
+gulp.task("optimize", ["optimize-bitmaps", "optimize-vectors"]);
+
+// Default runs everything
+gulp.task("default", ["rebuild", "optimize"]);
 
 // Watch job rebuilds and then watches for changes
 gulp.task("watch", ["rebuild"], function () {
