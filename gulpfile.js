@@ -39,7 +39,7 @@
 
 "use strict";
 
-var gulp, gutil, minifycss, autoprefixer, uglify, concat, path, svgmin, imagemin, styles, scripts, bitmaps, vectors;
+var gulp, gutil, minifycss, autoprefixer, uglify, concat, path, svgo, imagemin, styles, scripts, bitmaps, vectors;
 
 /**
  * Configuration stuff
@@ -85,7 +85,7 @@ uglify = require("gulp-uglify");
 
 // Image dependencies
 imagemin = require("gulp-imagemin");
-svgmin   = require("gulp-svgmin");
+svgo     = require("gulp-svgo");
 
 // Use the path library to split down the config output into path and filename.
 path = require("path");
@@ -110,7 +110,7 @@ gulp.task("scripts", function () {
 // Optimize vector images
 gulp.task("optimize-vectors", function () {
     return gulp.src(vectors.input)
-        .pipe(svgmin())
+        .pipe(svgo())
         .pipe(gulp.dest(vectors.output));
 });
 
