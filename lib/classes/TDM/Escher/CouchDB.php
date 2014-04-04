@@ -63,7 +63,7 @@ abstract class CouchDB implements CRUD
 
     private function __construct()
     {
-        $this->http = new HTTP\Request();
+        $this->http = new HTTP\CreateRequest();
     }
 
     private function parseHeaders($raw)
