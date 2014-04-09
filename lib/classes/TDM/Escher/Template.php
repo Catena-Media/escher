@@ -512,7 +512,7 @@ class Template extends Singleton
         $this->buildCodeBlocks($content, $codeBlock['children'][$blockName]);
 
         // Replace the code block with a place holder to identify the code block
-        $replacement = '{' . $blockName . '}';
+        $replacement = '{{' . $blockName . '}}';
 
         return $replacement;
     }
@@ -806,7 +806,7 @@ class Template extends Singleton
                             }
 
                             $blockValue = $this->parseBlock($childCodeBlock);
-                            $find[]    = '{' . $blockName . '}';
+                            $find[]    = '{{' . $blockName . '}}';
                             $replace[] = $blockValue;
                         }
                     }
@@ -845,7 +845,7 @@ class Template extends Singleton
             // into the parsed code.
             foreach ($codeBlock['children'] as $blockName => $childCodeBlock) {
                 $blockValue = $this->parseBlock($childCodeBlock);
-                $find[]    = '{' . $blockName . '}';
+                $find[]    = '{{' . $blockName . '}}';
                 $replace[] = $blockValue;
             }
 
