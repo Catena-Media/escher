@@ -70,6 +70,41 @@ class CurrentRequest
         exit;
     }
 
+    public static function language()
+    {
+        // Fetch the language header. If we can't find one, then
+        // let's assume that it's English.
+        $languages = self::requestHeaders("Accept-Language");
+        if (!$languages) {
+            return ["en"];
+        }
+
+        // Break up the language and normalize the q-values
+        $languages = explode(",", $languages);
+        foreach ($languages as &$language) {
+            $language = explode(";q=", $language);
+            if (isset($language[1])) {
+                $language[1] = (float)$language[1];
+            } else {
+                $language[1] = 1;
+            }
+        }
+        unset($language); // Break the reference
+
+        // Sort into q-value order. We can't just do a simple subtraction here,
+        // because PHP casts the return value to an integer for comparison, so
+        // small returns like 0.3 are cast to 0.
+        usort($languages, function ($a, $b) {
+            return (100 * $b[1]) - (100 * $a[1]);
+        });
+
+        // Return the correct language, with english as a backstop
+        $return = array_map(function ($foo) {
+            return array_shift($foo);
+        }, $languages);
+        return array_merge($return, "en");
+    }
+
     public static function setContentType($contentType)
     {
         header("Content-Type: " . $contentType, YES);
