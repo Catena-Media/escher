@@ -102,7 +102,7 @@ class CurrentRequest
         $return = array_map(function ($foo) {
             return array_shift($foo);
         }, $languages);
-        return array_merge($return, "en");
+        return array_merge($return, ["en"]);
     }
 
     public static function setContentType($contentType)
