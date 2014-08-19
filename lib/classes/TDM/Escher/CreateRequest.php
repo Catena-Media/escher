@@ -37,7 +37,7 @@
  *
  */
 
-namespace TDM\Escher\HTTP;
+namespace TDM\Escher;
 
 /**
  * CreateRequest
@@ -321,12 +321,7 @@ class CreateRequest
 
         // If we failed to get any headers, then the socket has failed.
         if (empty($headers)) {
-
-            fclose($socket);
-
-            // Re-try this request
-            $reply = $this->fetch($url, $method, $data, $customHeaders, $options);
-            return $reply;
+            return self::SOCKET_TIMED_OUT;
         }
 
         // Check for chunked transfer encoding and decode

@@ -63,7 +63,7 @@ abstract class CouchDB implements CRUD
 
     private function __construct()
     {
-        $this->http = new HTTP\CreateRequest();
+        $this->http = new CreateRequest();
     }
 
     private function parseHeaders($raw)
@@ -90,10 +90,10 @@ abstract class CouchDB implements CRUD
         // Check for errors
         if (is_numeric($reply) && $reply < 0) {
             switch ($reply) {
-                case HTTPRequest::SOCKET_TIMED_OUT:
+                case CreateRequest::SOCKET_TIMED_OUT:
                     $statusCode = 504;
                     break;
-                case HTTPRequest::CANNOT_OPEN_SOCKET:
+                case CreateRequest::CANNOT_OPEN_SOCKET:
                     $statusCode = 503;
                     break;
                 default:
@@ -159,25 +159,8 @@ abstract class CouchDB implements CRUD
         // Define the URL for the request
         $url = static::$baseUrl . $resource;
 
-        // Merge in the default headers
-        $headers = array_merge(
-            [
-                'Connection' => 'close',
-            ],
-            $headers
-        );
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
         // Process and return
         $reply = $couch->http->get($url, $headers, $options);
-
         return $couch->handleReply($reply);
     }
 
@@ -189,25 +172,8 @@ abstract class CouchDB implements CRUD
         // Define the URL for the request
         $url = static::$baseUrl . $resource;
 
-        // Merge in the default headers
-        $headers = array_merge(
-            [
-                'Connection' => 'close',
-            ],
-            $headers
-        );
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
         // Process and return
         $reply = $couch->http->delete($url, $headers, $options);
-
         return $couch->handleReply($reply);
     }
 
@@ -225,25 +191,8 @@ abstract class CouchDB implements CRUD
             $headers['Content-Type'] = 'application/json';
         }
 
-        // Merge in the default headers
-        $headers = array_merge(
-            [
-                'Connection' => 'close',
-            ],
-            $headers
-        );
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
         // Process and return
         $reply = $couch->http->post($url, $data, $headers, $options);
-
         return $couch->handleReply($reply);
     }
 
@@ -261,25 +210,8 @@ abstract class CouchDB implements CRUD
             $headers['Content-Type'] = 'application/json';
         }
 
-        // Merge in the default headers
-        $headers = array_merge(
-            [
-                'Connection' => 'close',
-            ],
-            $headers
-        );
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
         // Process and return
         $reply = $couch->http->put($url, $data, $headers, $options);
-
         return $couch->handleReply($reply);
     }
 
@@ -291,19 +223,16 @@ abstract class CouchDB implements CRUD
 
     public static function cleanupView($documents)
     {
-        return array_map(
-            function ($document) {
+        return array_map(function ($document) {
 
-                // If this is an include docs view, only look at the document
-                if (isset($document["doc"])) {
-                    $document = $document["doc"];
-                }
+            // If this is an include docs view, only look at the document
+            if (isset($document["doc"])) {
+                $document = $document["doc"];
+            }
 
-                // Clean up the CouchDB meta data
-                return self::cleanupDocument($document);
+            // Clean up the CouchDB meta data
+            return self::cleanupDocument($document);
 
-            },
-            $documents
-        );
+        }, $documents);
     }
 }

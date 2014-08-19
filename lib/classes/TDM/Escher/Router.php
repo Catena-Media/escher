@@ -203,10 +203,10 @@ class Router
                     call_user_func_array($route, $matches);
                 };
             }
-            
+
             // Failed to route this request
             return function () {
-                HTTP\StatusCode::returnCode(500);
+                CurrentRequest::returnCode(500);
                 exit;
             };
         }
@@ -242,7 +242,7 @@ class Router
             $method   = $this->cleanMethod(array_shift($arguments));
             $path     = strtolower(array_shift($arguments));
             $callback = array_shift($arguments);
-            
+
         // Anything else is an error
         } else {
             trigger_error("Invalid number of parameters passed to Router::map", E_USER_ERROR);
@@ -302,7 +302,7 @@ class Router
 
         // Cannot route this request - return a not found
         return function () {
-            HTTP\StatusCode::returnCode(404);
+            CurrentRequest::returnCode(404);
             exit;
         };
     }
