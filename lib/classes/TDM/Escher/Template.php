@@ -93,8 +93,8 @@ class Template extends Singleton
      * @var     array
      * @access  private
      */
-    private $codeBlocks         = array();
-    private $codeBlocksCache    = array();
+    private $codeBlocks      = array();
+    private $codeBlocksCache = array();
 
     /**
      * Container for the masks registered on this object
@@ -102,13 +102,13 @@ class Template extends Singleton
      * @var     array
      * @access  public
      */
-    private static $maskList    = array();
+    private static $maskList = array();
 
     /**
      * Container for post-parse processors
      *
      */
-    private $processorList   = array();
+    private $processorList = array();
 
     /**
      * Error constants
@@ -126,7 +126,7 @@ class Template extends Singleton
      * @const   string
      * @access  public
      */
-    const CACHE_EXTENSION   = '.template';
+    const CACHE_EXTENSION = '.template';
 
     /**
      * Escher\Template::instance()
@@ -253,7 +253,6 @@ class Template extends Singleton
         // Otherwise, check if this mask exists?
         $maskExists = isset(self::$maskList[$maskName]) && is_callable(self::$maskList[$maskName]['callback']);
         if ($maskExists) {
-
             // Yep - get the parameters for this mask
             $param = self::$maskList[$maskName]['param'];
             if (!is_array($param)) {
@@ -369,7 +368,6 @@ class Template extends Singleton
     {
         // Check the template file specified is valid
         if (is_readable($templateFilename)) {
-
             // Get the proper path to the template. We'll need
             // this later when we're caching it. We don't want
             // to cache the same files twice because they were
@@ -377,17 +375,14 @@ class Template extends Singleton
             $foundTemplateFile = realpath($templateFilename);
 
         } else {
-
             // Trigger a fault as the template file could not be found
             $this->fault(self::ERROR_FILE_NOT_FOUND, $templateFilename);
-
             return false;
         }
 
         // Lets get this template into our cache if it isn't in there
         // already. Saves re-parsing it on each request
         if (!$this->cacheValid($foundTemplateFile)) {
-
             // Load the template data
             $templateSource = file_get_contents($foundTemplateFile);
             $this->encode($templateSource);
@@ -444,12 +439,10 @@ class Template extends Singleton
         // Check if there is a cached version of this string
         $cacheFilename = self::$cacheLocation . '/' . sha1($templateSource) . self::CACHE_EXTENSION;
         if (file_exists($cacheFilename)) {
-
             // Load the data from the cache
             $this->codeBlocksCache = unserialize(file_get_contents($cacheFilename));
 
         } else {
-
             // Generate code blocks
             $this->encode($templateSource);
 
@@ -607,7 +600,6 @@ class Template extends Singleton
         // namespace. If it is, we continue to the next iteration. If it is
         // not, then we have been passed an invalid namespace.
         for ($i = 0, $l =  count($nameArray); $i < $l; $i += 1) {
-
             // Check the child is available
             if (!isset($codeBlockArray['children'][$nameArray[$i]])) {
                 $this->fault(self::ERROR_INVALID_NAMESPACE, $nameSpace);
@@ -643,7 +635,6 @@ class Template extends Singleton
         // Iterate through the namespace and make sure that all the
         // relevant spaces exist before we bung our new space in the end
         for ($i = 0, $l = count($nameArray); $i < $l; $i += 1) {
-
             // If the element isn't listed in the childre, then we have
             // been passed an invalid parameters!
             if (!isset($codeBlockArray['children'][$nameArray[$i]])) {
@@ -744,14 +735,12 @@ class Template extends Singleton
     {
         // Only process vars if instructed to, and vars are available.
         if (isset($codeBlock['variables']) && is_array($codeBlock['variables'])) {
-
             // Container for parsed data
             $value = '';
 
             // Check if the current element in the variables array
             // is itself an array. If so, we process it as a recordset
             if (is_array(current($codeBlock['variables']))) {
-
                 // Check for segments
                 if (empty($codeBlock['segmentor'])) {
                     $dataSource =& $codeBlock['variables'];
@@ -770,7 +759,6 @@ class Template extends Singleton
 
                 // Loop through the variables
                 foreach ($dataSource as $segment => $record) {
-
                     if (empty($record)) {
                         continue;
                     }
@@ -788,7 +776,6 @@ class Template extends Singleton
 
                     // If there are children
                     if (!empty($codeBlock['children'])) {
-
                         // Check for a child to receive data segments
                         $segmentedChild = null;
                         if (!empty($codeBlock['segmentor'])) {
@@ -798,7 +785,6 @@ class Template extends Singleton
                         // Loop through the child blocks, parse them and substitute them
                         // into the parsed code.
                         foreach ($codeBlock['children'] as $blockName => $childCodeBlock) {
-
                             // If the child block was requested for segmentation,
                             // then also assignthe correct variable segment to it.
                             if ($segmentedChild === $blockName) {
@@ -824,20 +810,17 @@ class Template extends Singleton
                 return $value;
 
             } else {
-
                 // Not a recordset, just do a straight replace
                 $value = $this->nameReplace($codeBlock['variables'], $codeBlock['code']);
             }
 
         } else {
-
             // Don't parse the vars, just use the raw code
             $value = $codeBlock['code'];
         }
 
         // If there are children
         if (!empty($codeBlock['children'])) {
-
             $find    = array();
             $replace = array();
 
@@ -872,10 +855,8 @@ class Template extends Singleton
     {
         // If there are variables to replace
         if (is_array($variableList)) {
-
             // Loop through the variable list
             foreach ($variableList as $variableName => $variableValue) {
-
                 // If this is a callback, execute it first
                 if (!is_scalar($variableValue) && is_callable($variableValue)) {
                     $variableValue = call_user_func($variableValue);
@@ -942,12 +923,10 @@ class Template extends Singleton
     public function assign($dataValues, $nameSpace = null)
     {
         if (is_null($nameSpace)) {
-
             // Null means get the top-level code block
             $nameSpace =& $this->codeBlocks;
 
         } elseif (is_array($nameSpace)) {
-
             // If the passed namespace is an array, then
             // it is defining segmentors for nested codeblocks
 
@@ -962,7 +941,6 @@ class Template extends Singleton
             // Iterate over any remaining segmentors
             if (sizeof($segmentors)) {
                 foreach ($segmentors as $segmentor => $segmentorTarget) {
-
                     // Find the parent of the namespace identified by the segmentor
                     $child  = substr($segmentorTarget, strrpos($segmentorTarget, ':') + 1);
                     $parent = substr($segmentorTarget, 0, -strlen($child) - 1);
@@ -974,7 +952,6 @@ class Template extends Singleton
             }
 
         } else {
-
             // Otherwise, it is a string and defines
             // the name of the codeblock to load
             $nameSpace =& $this->getNamespace($nameSpace);
@@ -982,16 +959,13 @@ class Template extends Singleton
 
         // Make sure the data is an array
         if ($dataValues instanceof MySQLi_Result) {
-
             while ($record = mysqli_fetch_assoc($dataValues)) {
                 $nameSpace['variables'][] = $record;
             }
 
         } elseif (is_array($dataValues)) {
-
             // Loop through the data and store in the block
             foreach ($dataValues as $varName => $varValue) {
-
                 if (is_string($varName)) {
                     if (is_array($varValue) && !is_callable($varValue)) {
                         $masterName = $varName;
@@ -1009,7 +983,6 @@ class Template extends Singleton
             }
 
         } else {
-
             // Can't make sense of the passed data
             $this->fault(self::ERROR_NOT_VALID);
         }

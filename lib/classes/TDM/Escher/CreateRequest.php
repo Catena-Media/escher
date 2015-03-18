@@ -159,7 +159,6 @@ class CreateRequest
         // Read chunk lengths from the data stream
         $buffer = tmpfile();
         while ($length = fgets($socket, 128)) {
-
             // Lengths may contain a ; terminator for chunk extensions.
             $length = substr($length, 0, strpos($length, ";") ?: -2);
 
@@ -187,7 +186,6 @@ class CreateRequest
         // Check for a cached connection
         static $connections = [];
         if (isset($connections[$specification]) && is_resource($connections[$specification])) {
-
             // There is a connection! But it might be dead. Check.
             $socketMetaData    = @stream_get_meta_data($connections[$specification]);
             $socketHasTimedOut = !empty($socketMetaData['timed_out']);
@@ -227,7 +225,6 @@ class CreateRequest
 
         // Include passed data, if set
         if (sizeof($data)) {
-
             if ($method === 'POST' && empty($headers['Content-Type'])) {
                 $headers['Content-Type'] = 'application/x-www-form-urlencoded';
             }
@@ -295,7 +292,6 @@ class CreateRequest
         // Write to the socket
         $bytesWritten = fwrite($socket, $requestString);
         if ($bytesWritten !== strlen($requestString)) {
-
             // We failed to write to this socket, so kill it.
             fclose($socket);
 
@@ -335,7 +331,6 @@ class CreateRequest
 
         // Check for redirects
         if (preg_match('#^HTTP/1.[01] 30[123]#i', $headers["status"]) && !empty($options["follow_location"])) {
-
             // In the event of a redirect, seek a location header
             if (isset($headers["location"])) {
                 $url = array_merge($url, parse_url($headers["location"]));

@@ -168,7 +168,6 @@ class Router
         // Get the list of regex routes for this method, and split it up into chunks
         $regexes = array_chunk($this->routeRegexes[$method], $this->chunkSize);
         foreach ($regexes as $tens => $chunk) {
-
             // Merge this chunk into a single regex expression
             // and test it. If there is no match, try the next chunk.
             $regex = $this->compileRegexChunk($chunk);

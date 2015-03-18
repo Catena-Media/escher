@@ -106,7 +106,6 @@ abstract class CouchDB implements CRUD
             $body    = null;
 
         } else {
-
             // break into headers/body
             @list($headers, $body) = explode("\r\n\r\n", $reply, 2);
 

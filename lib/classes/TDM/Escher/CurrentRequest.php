@@ -190,11 +190,9 @@ class CurrentRequest
     {
         // Just get PHP to do it
         if (function_exists('apache_request_headers')) {
-
             $headers = apache_request_headers();
 
         } else {
-
             // Work it out by hand
             static $headers;
             if (empty($headers)) {
