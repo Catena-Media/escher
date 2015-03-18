@@ -882,31 +882,23 @@ class Template extends Singleton
                 }
 
                 // Variables enclosed in {{}} should be replaced raw.
-                $code = preg_replace_callback(
-                    '/{{(' . $variableName . ')(\\[(\\w+)\\])?}}/',
-                    function ($matches) use ($variableValue) {
-                        if (isset($matches[3])) {
-                            return $this->maskReplace($matches[3], $variableValue);
-                        }
+                $regex = '/{{(' . preg_quote($variableName, '/') . ')(\\[(\\w+)\\])?}}/';
+                $code = preg_replace_callback($regex, function ($matches) use ($variableValue) {
+                    if (isset($matches[3])) {
+                        return $this->maskReplace($matches[3], $variableValue);
+                    }
+                    return $variableValue;
+                }, $code);
 
-                        return $variableValue;
-                    },
-                    $code
-                );
-
-                // Variables enclosed in {} should be escaped first.
-                $code = preg_replace_callback(
-                    '/{(' . $variableName . ')(\\[(\\w+)\\])?}/',
-                    function ($matches) use ($variableValue) {
-                        $safeValue = htmlspecialchars($variableValue);
-                        if (isset($matches[3])) {
-                            return $this->maskReplace($matches[3], $safeValue);
-                        }
-
-                        return $safeValue;
-                    },
-                    $code
-                );
+                // Variables enclosed in {} should be escaped before replacement.
+                $regex = '/{(' . preg_quote($variableName, '/') . ')(\\[(\\w+)\\])?}/';
+                $code = preg_replace_callback($regex, function ($matches) use ($variableValue) {
+                    $safeValue = htmlspecialchars($variableValue);
+                    if (isset($matches[3])) {
+                        return $this->maskReplace($matches[3], $safeValue);
+                    }
+                    return $safeValue;
+                }, $code);
             }
         }
 
