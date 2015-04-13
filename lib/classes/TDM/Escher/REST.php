@@ -45,13 +45,13 @@ namespace TDM\Escher;
  * REST interface
  *
  * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   Twist Digital Media 2009
+ * @copyright   Twist Digital Media 2013
  */
 
 interface REST
 {
-    public static function put($url, $data = [], Array $headers = [], Array $options = []);
-    public static function get($url, Array $headers = [], Array $options = []);
     public static function post($url, $data = [], Array $headers = [], Array $options = []);
+    public static function get($url, Array $headers = [], Array $options = []);
+    public static function put($url, $data = [], Array $headers = [], Array $options = []);
     public static function delete($url, Array $headers = [], Array $options = []);
 }

@@ -42,28 +42,24 @@ namespace TDM\Escher;
 /**
  * CouchDB
  *
- * Abstract class for working with CouchDB.
+ * Class for working with CouchDB.
  *
- * This class should be extended by the current project, to set the base url.
- * <code>
- *   class \MyCompany\MyProject\CouchDB extends \TDM\Escher\CouchDB
- *   {
- *       public static $baseUrl = 'http://mycouchserver.example.com:5984/mydatabase';
- *   }
- * </code>
+ * The base URL should be set using the Settings object, or passed to the constructor to override
  *
  * @author    Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright Twist Digital Media 2013
+ * @copyright Twist Digital Media 2013-2015
  * @todo      A ground-up rewrite, as this code is shocking
  */
 
-abstract class CouchDB implements CRUD
+class CouchDB extends Singleton implements REST
 {
     private $http;
+    private $baseUrl;
 
-    private function __construct()
+    protected function __construct($base = null)
     {
         $this->http = new CreateRequest();
+        $this->baseUrl = $base ?: (new Settings())->couchdb["host"];
     }
 
     private function parseHeaders($raw)
@@ -138,25 +134,28 @@ abstract class CouchDB implements CRUD
         return $reply;
     }
 
-    public static function &instance()
-    {
-        $class_name = get_called_class();
-
-        static $i;
-        if (!$i instanceof $class_name) {
-            $i = new $class_name();
-        }
-
-        return $i;
-    }
-
-    public static function read($resource, Array $headers = [], Array $options = [])
+    public static function get($resource, Array $headers = [], Array $options = [])
     {
         // Get an instance
         $couch = self::instance();
 
         // Define the URL for the request
-        $url = static::$baseUrl . $resource;
+        $url = $couch->baseUrl . $resource;
+
+        // Process and return
+        $reply = $couch->http->get($url, $headers, $options);
+
+        return $couch->handleReply($reply);
+    }
+
+    public static function view($resource, $design, $view, $params = [], Array $headers = [], Array $options = [])
+    {
+        // Get an instance
+        $couch = self::instance();
+
+        // Define the URL for the request
+        $url = $couch->baseUrl . $resource . "/_design/" . urlencode($design) . "/_view/" . urlencode($view);
+        $url .= '?' . http_build_query(array_map("json_encode", $params));
 
         // Process and return
         $reply = $couch->http->get($url, $headers, $options);
@@ -169,20 +168,20 @@ abstract class CouchDB implements CRUD
         $couch = self::instance();
 
         // Define the URL for the request
-        $url = static::$baseUrl . $resource;
+        $url = $couch->baseUrl . $resource;
 
         // Process and return
         $reply = $couch->http->delete($url, $headers, $options);
         return $couch->handleReply($reply);
     }
 
-    public static function create($resource, $data = [], Array $headers = [], Array $options = [])
+    public static function post($resource, $data = [], Array $headers = [], Array $options = [])
     {
         // Get an instance
         $couch = self::instance();
 
         // Define the URL for the request
-        $url = static::$baseUrl . $resource;
+        $url = $couch->baseUrl . $resource;
 
         // If the data is an array, JSON-encode it
         if (!is_scalar($data)) {
@@ -195,13 +194,13 @@ abstract class CouchDB implements CRUD
         return $couch->handleReply($reply);
     }
 
-    public static function update($resource, $data = [], Array $headers = [], Array $options = [])
+    public static function put($resource, $data = [], Array $headers = [], Array $options = [])
     {
         // Get an instance
         $couch = self::instance();
 
         // Define the URL for the request
-        $url = static::$baseUrl . $resource;
+        $url = $couch->baseUrl . $resource;
 
         // If the data is an array, JSON-encode it
         if (!is_scalar($data)) {
@@ -223,7 +222,6 @@ abstract class CouchDB implements CRUD
     public static function cleanupView($documents)
     {
         return array_map(function ($document) {
-
             // If this is an include docs view, only look at the document
             if (isset($document["doc"])) {
                 $document = $document["doc"];

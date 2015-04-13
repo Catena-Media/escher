@@ -63,7 +63,7 @@ class Template extends Singleton
      * @var     bool
      * @access  public
      */
-    public $removeHTMLComments  = true;
+    public $removeHTMLComments = true;
 
     /**
      * If any unsused names are found {example} will be removed
@@ -71,7 +71,7 @@ class Template extends Singleton
      * @var     bool
      * @access  public
      */
-    public $removeUnusedNames   = true;
+    public $removeUnusedNames = true;
 
     /**
      * Location of where the cache is to be stored, static var affects all template objects
@@ -409,8 +409,7 @@ class Template extends Singleton
 
         // Fill it with the parsed code blocks
         $codeBlockPointer = $this->codeBlocksCache;
-
-        return true;
+        return $namespace;
     }
 
     /**
@@ -506,7 +505,6 @@ class Template extends Singleton
 
         // Replace the code block with a place holder to identify the code block
         $replacement = '{{' . $blockName . '}}';
-
         return $replacement;
     }
 
@@ -774,6 +772,9 @@ class Template extends Singleton
                     $find[]    = '{templateRowNum}';
                     $replace[] = $rowCount;
 
+                    $find[]    = '{templateRowAlpha}';
+                    $replace[] = chr(64 + $rowCount);
+
                     // If there are children
                     if (!empty($codeBlock['children'])) {
                         // Check for a child to receive data segments
@@ -863,23 +864,31 @@ class Template extends Singleton
                 }
 
                 // Variables enclosed in {{}} should be replaced raw.
-                $regex = '/{{(' . preg_quote($variableName, '/') . ')(\\[(\\w+)\\])?}}/';
-                $code = preg_replace_callback($regex, function ($matches) use ($variableValue) {
-                    if (isset($matches[3])) {
-                        return $this->maskReplace($matches[3], $variableValue);
-                    }
-                    return $variableValue;
-                }, $code);
+                $code = preg_replace_callback(
+                    '/{{(' . $variableName . ')(\\[(\\w+)\\])?}}/',
+                    function ($matches) use ($variableValue) {
+                        if (isset($matches[3])) {
+                            return $this->maskReplace($matches[3], $variableValue);
+                        }
 
-                // Variables enclosed in {} should be escaped before replacement.
-                $regex = '/{(' . preg_quote($variableName, '/') . ')(\\[(\\w+)\\])?}/';
-                $code = preg_replace_callback($regex, function ($matches) use ($variableValue) {
-                    $safeValue = htmlspecialchars($variableValue);
-                    if (isset($matches[3])) {
-                        return $this->maskReplace($matches[3], $safeValue);
-                    }
-                    return $safeValue;
-                }, $code);
+                        return $variableValue;
+                    },
+                    $code
+                );
+
+                // Variables enclosed in {} should be escaped first.
+                $code = preg_replace_callback(
+                    '/{(' . $variableName . ')(\\[(\\w+)\\])?}/',
+                    function ($matches) use ($variableValue) {
+                        $safeValue = htmlspecialchars($variableValue);
+                        if (isset($matches[3])) {
+                            return $this->maskReplace($matches[3], $safeValue);
+                        }
+
+                        return $safeValue;
+                    },
+                    $code
+                );
             }
         }
 
@@ -1038,6 +1047,12 @@ class Template extends Singleton
         $codeBlock =& $this->getNamespace($nameSpace);
 
         return $codeBlock['variables'];
+    }
+
+    public function retrieveChildren($nameSpace)
+    {
+        $codeBlock =& $this->getNamespace($nameSpace);
+        return array_keys($codeBlock["children"]);
     }
 
     /**

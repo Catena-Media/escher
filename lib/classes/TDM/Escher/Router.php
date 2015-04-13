@@ -78,6 +78,11 @@ class Router
         if ($method === "POST") {
             return "POST";
         }
+
+        if ($method === "*") {
+            return "*";
+        }
+
         return "GET";
     }
 
@@ -205,8 +210,7 @@ class Router
 
             // Failed to route this request
             return function () {
-                CurrentRequest::returnCode(500);
-                exit;
+                return CurrentRequest::returnCode(404);
             };
         }
 
@@ -301,8 +305,7 @@ class Router
 
         // Cannot route this request - return a not found
         return function () {
-            CurrentRequest::returnCode(404);
-            exit;
+            return CurrentRequest::returnCode(404);
         };
     }
 }

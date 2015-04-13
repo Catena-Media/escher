@@ -40,30 +40,68 @@
 namespace TDM\Escher;
 
 /**
- * Settings
+ * Console
  *
- * This class will import into itself all the keys it finds in settings.ini
- * file that it finds at the root level of the application.
+ * Handles requests coming from the console
+ * TODO: Make this not terrible.
  *
  * @author      Mike Hall <mike.hall@twistdigital.co.uk>
  * @copyright   2014 Twist Digital Media
  */
 
-class Settings extends Singleton
+class Console
 {
-    public function __construct()
+    public static function createPresenter($args)
     {
-        // Read the settings file
-        $settingsFile = ROOTDIR . '/settings.ini';
-        if (!is_readable($settingsFile)) {
-            trigger_error("Expected settings file at " . $settingsFile);
-            return;
+        $validName = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
+
+        if (empty($args[0]) || !preg_match($validName, $args[0])) {
+            trigger_error("Expected a valid vendor name", E_USER_ERROR);
         }
 
-        // Parse the settings file
-        $settings = parse_ini_file($settingsFile, true);
-        foreach ($settings as $key => $value) {
-            $this->$key = $value;
+        if (empty($args[1]) || !preg_match($validName, $args[1])) {
+            trigger_error("Expected a valid package name", E_USER_ERROR);
         }
+
+        if (empty($args[2]) || !preg_match($validName, $args[2])) {
+            trigger_error("Expected a valid class name", E_USER_ERROR);
+        }
+
+        list ($vendor, $package, $className) = array_slice($args, 0, 3);
+
+
+        $template = Template::instance();
+
+        $template->loadTemplate(ROOTDIR . "/templates/.escher/presenter.class", "Class");
+
+        $template->assign(
+            array(
+                "Vendor" => $vendor,
+                "Package" => $package,
+                "ClassName" => $className,
+                "ProjectName" => $package,
+                "VendorName" => $vendor,
+                "YourName" => "You <you@example.com>",
+                "Date" => date("Y"),
+            ),
+            "Class"
+        );
+
+        // Where should this file go?
+        $filename = ROOTDIR . "/lib/classes/" . implode("/", [$vendor, $package, "Presenters", $className]) . ".php";
+        $dirname  = dirname($filename);
+        if (!is_dir($dirname)) {
+            mkdir($dirname, null, YES);
+        }
+
+        if (!is_writable($dirname)) {
+            trigger_error("Cannot write to " . $dirname, E_USER_ERROR);
+        }
+
+        if (file_exists($filename)) {
+            trigger_error("File already exists at " . $filename, E_USER_ERROR);
+        }
+
+        file_put_contents($filename, $template->render("Class"));
     }
 }

@@ -64,13 +64,8 @@ abstract class View
         // Noop
     }
 
-    public function render($namespace)
+    public function render($namespace = "Main")
     {
         return $this->template->render($namespace);
-    }
-
-    public function assign(Array $data, $namespace = null)
-    {
-        $this->template->assign($data, $namespace ?: $namespace);
     }
 }
