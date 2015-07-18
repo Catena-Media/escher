@@ -8,7 +8,7 @@
  * @license All Rights Reserved
  */
 
-namespace TDM\GG\Views;
+namespace YourCompany\YourProject\Views;
 
 /**
  * Displays the homepage
