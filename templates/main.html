@@ -2,31 +2,26 @@
 <html>
     <head>
 
-        <title>Your Project</title>
-        <meta name="description" content="">
+        <!--START:Meta-->
+        <title>{title}</title>
+        <meta name="description" content="{description}">
+        <!--END:Meta-->
 
         <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no">
+        <meta name="viewport" content="initial-scale=1.0, width=device-width">
         <meta name="author" content="Your Company">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <link rel="apple-touch-icon" href="{vimagedir}/apple-touch-icon.png">
-        <link rel="apple-touch-icon" href="{vimagedir}/apple-touch-icon.png" sizes="72x72">
-        <link rel="apple-touch-icon" href="{vimagedir}/apple-touch-icon.png" sizes="114x114">
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" sizes="72x72">
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" sizes="114x114">
 
-        <!--[if lt IE 9]>
-        <script type="text/javascript" src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-
-        <link rel="shortcut icon" href="{vimagedir}/favicon.ico" type="image/x-icon">
-        <link href="{vrootdir}/stylesheet.css" rel="stylesheet" media="screen">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link href="/stylesheet.css" rel="stylesheet" media="screen">
+        <script src="/javascript.js" async></script>
     </head>
 
     <body>
-
         {{Content}}
-
-        <script src="{vrootdir}/javascript.js"></script>
-
     </body>
 </html>

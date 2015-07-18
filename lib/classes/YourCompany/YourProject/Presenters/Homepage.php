@@ -3,9 +3,9 @@
 /**
  * Your Project
  *
- * @copyright 2014 YourCompany
- * @package   \YourCompany\YourProject
- * @license   All Rights Reserved
+ * @copyright 2015 YourCompany
+ * @package \YourCompany\YourProject
+ * @license All Rights Reserved
  */
 
 namespace YourCompany\YourProject\Presenters;
@@ -16,10 +16,10 @@ use \YourCompany\YourProject as YourProject;
 /**
  * Homepage
  *
- * Handles homepage requests
+ * Handles requests for the homepage
  *
- * @copyright 2014 Your Company
- * @author    You <you@example.com>
+ * @copyright 2015 Your Company
+ * @author You <you@example.com>
  */
 class Homepage extends Escher\Presenter
 {
@@ -31,7 +31,12 @@ class Homepage extends Escher\Presenter
         // Merge in data from the model
         // ...
 
+        $page->setMetaData(array(
+            "title" => "My Awesome Website",
+            "description" => "Things you can do on my awesome website",
+        ));
+
         // Output the page
-        echo $page->render();
+        return $page->render();
     }
 }

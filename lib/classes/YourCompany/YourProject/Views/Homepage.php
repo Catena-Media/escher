@@ -3,28 +3,38 @@
 /**
  * Your Project
  *
- * @copyright 2014 YourCompany
- * @package   \YourCompany\YourProject
- * @license   All Rights Reserved
+ * @copyright 2015 YourCompany
+ * @package \YourCompany\YourProject
+ * @license All Rights Reserved
  */
 
-namespace YourCompany\YourProject\Views;
+namespace TDM\GG\Views;
 
 /**
- * Homepage
- *
  * Displays the homepage
  *
- * @copyright 2014 Your Company
- * @author    You <you@example.com>
+ * @copyright 2015 Your Company
+ * @author You <you@example.com>
  */
-
 class Homepage extends Main
 {
+    /**
+     * Load the homepage view
+     *
+     * @return string - The namespace of the view
+     */
     protected function loadView()
     {
+        // Load the parent view
         $parent = parent::loadView();
-        $this->template->loadTemplate("templates/homepage.html", "$parent:Content");
-        return "$parent:Content";
+
+        // Load the homepage in as the content view
+        $this->namespace = $this->template->loadTemplate(
+            ROOTDIR . "/templates/homepage.html",
+            "{$parent}:Content"
+        );
+
+        // Return the namespace
+        return $this->namespace;
     }
 }

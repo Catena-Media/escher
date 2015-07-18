@@ -3,9 +3,9 @@
 /**
  * Your Project
  *
- * @copyright 2014 YourCompany
- * @package   \YourCompany\YourProject
- * @license   All Rights Reserved
+ * @copyright 2015 YourCompany
+ * @package \YourCompany\YourProject
+ * @license All Rights Reserved
  */
 
 namespace YourCompany\YourProject\Views;
@@ -13,25 +13,52 @@ namespace YourCompany\YourProject\Views;
 use \TDM\Escher as Escher;
 
 /**
- * Homepage
+ * Renders the common site elements
  *
- * Displays the homepage
- *
- * @copyright 2014 Your Company
- * @author    You <you@example.com>
+ * @copyright 2015 Your Company
+ * @author You <you@example.com>
  */
-
 class Main extends Escher\View
 {
+    /**
+     * Store the namespace of this view
+     * @var string
+     * @access protected
+     */
+    protected $namespace;
+
+    /**
+     * Load and set up the view
+     *
+     * @return string - The namespace of the created view
+     */
     protected function loadView()
     {
-        $this->template->loadTemplate("templates/main.html", "Main");
+        // This content should be minified by default
         $this->template->addProcessor(['\TDM\Escher\Minify\HTML', 'minify']);
-        return "Main";
+
+        // Load the template file
+        $this->namespace = $this->template->loadTemplate(ROOTDIR . "/templates/main.html", "Main");
+
+        // Load the cache busters
+        $scriptLastModified = filemtime(ROOTDIR . "/public/javascript.js");
+        $stylesLastModified = filemtime(ROOTDIR . "/public/stylesheet.css");
+        $this->template->assign(array(
+            "scriptsLastModified" => $scriptLastModified,
+            "stylesLastModified" => $stylesLastModified,
+        ), $this->namespace);
+
+        return $this->namespace;
     }
 
-    public function render($namespace = "Main")
+    /**
+     * Set the meta data for this page
+     *
+     * @param array $meta - An array of meta data, expect ["title" => "...," "description" => "..."]
+     * @return void
+     */
+    public function setMetaData(Array $meta)
     {
-        return parent::render($namespace);
+        $this->template->assign($meta, "Main:Meta");
     }
 }

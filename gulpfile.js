@@ -1,137 +1,134 @@
-/*jslint browser: false, node: true, maxlen: 120 */
-
-/**
- * Escher Framework v2.0
- *
- * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
- *
- * Copyright (c) 2000-2014, Twist Digital Media
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice, this
- *    list of conditions and the following disclaimer in the documentation and/or
- *    other materials provided with the distribution.
- *
- * 3. Neither the name of the {organization} nor the names of its
- *    contributors may be used to endorse or promote products derived from
- *    this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- */
+/*jslint node, maxlen: 120 */
 
 "use strict";
 
-var gulp, gutil, minifycss, autoprefixer, uglify, concat, path, svgo, imagemin, styles, scripts, bitmaps, vectors;
+    // Core gulp stuff
+var gulp = require("gulp-help")(require("gulp")),
+    gutil = require("gulp-util"),
+    bump = require("gulp-bump"),
+    concat = require("gulp-concat"),
+    noop = require("lodash").noop,
+    stream = require("vinyl-source-stream"),
+    streamify = require("gulp-streamify"),
 
-/**
- * Configuration stuff
- */
+    // Stylesheet stuff
+    sass = require("gulp-sass"),
+    minifycss = require("gulp-minify-css"),
+    autoprefixer = require("gulp-autoprefixer"),
 
-styles = {
-    "input": "lib/stylesheets/**/*.css",
-    "output": "public/stylesheets.css"
-};
+    // Javascript stuff
+    uglify = require("gulp-uglify"),
+    browserify = require("browserify"),
+    babelify = require("babelify"),
+    strip = require("gulp-strip-debug"),
 
-scripts = {
-    "input": "lib/javascript/**/*.js",
-    "output": "public/javascript.js"
-};
-
-bitmaps = {
-    "input": ["public/**/*.png", "public/**/*.jpg", "public/**/*.jpeg", "public/**/*.gif"],
-    "output": "public"
-};
-
-vectors = {
-    "input": "public/**/*.svg",
-    "output": "public"
-};
-
-/**
- * End configuration
- */
-
-// Gulp core stuff
-gulp  = require('gulp');
-gutil = require('gulp-util');
-
-// Concat lets us cat/rename files
-concat = require("gulp-concat");
-
-// CSS Dependencies
-autoprefixer = require('gulp-autoprefixer');
-minifycss = require('gulp-minify-css');
-
-// Javascript Dependencies
-uglify = require("gulp-uglify");
-
-// Image dependencies
-imagemin = require("gulp-imagemin");
-svgo     = require("gulp-svgo");
-
-// Use the path library to split down the config output into path and filename.
-path = require("path");
+    // Image stuff
+    imagemin = require("gulp-imagemin");
 
 // Compile stylesheets with optional minification
-gulp.task("styles", function () {
-    return gulp.src(styles.input)
-        .pipe(autoprefixer("last 2 versions", "ie 8", "ie 9"))
-        .pipe(concat(path.basename(styles.output)))
-        .pipe(gutil.env.production ? minifycss() : gutil.noop())
-        .pipe(gulp.dest(path.dirname(styles.output)));
+gulp.task("styles", "Rebuild the SASS.", function () {
+
+    var sassConfig = {style: "expanded"},
+        prefixerConfig = {},
+        squish = gutil.noop(),
+        prefix;
+
+    if (gutil.env.production) {
+        squish = minifycss();
+    } else {
+        sassConfig.errLogToConsole = true;
+        sassConfig.sourceComments = "map";
+        prefixerConfig.map = {inline: true};
+    }
+
+    prefix = autoprefixer(
+        "last 3 versions",
+        "Explorer >= 10",
+        "Android >= 4.0",
+        "Blackberry 10",
+        "> 5%",
+        prefixerConfig
+    );
+
+    return gulp.src("./lib/stylesheets/main.scss")
+        .pipe(sass(sassConfig))
+        .pipe(prefix)
+        .pipe(concat("stylesheet.css"))
+        .pipe(squish)
+        .pipe(gulp.dest("./public/"));
+}, {
+    options: {
+        production: "  production ready"
+    }
 });
 
 // Compile javascript with optional minification
-gulp.task("scripts", function () {
-    return gulp.src(scripts.input)
-        .pipe(concat(path.basename(scripts.output)))
-        .pipe(gutil.env.production ? uglify() : gutil.noop())
-        .pipe(gulp.dest(path.dirname(scripts.output)));
+gulp.task("scripts", "Rebuild the javascript.", function () {
+
+    var options = {debug: !gutil.env.production},
+        squish = gutil.noop(),
+        cleanup = gutil.noop();
+
+    if (!options.debug) {
+        squish = streamify(uglify());
+        cleanup = streamify(strip());
+    }
+
+    return browserify("./lib/javascript/main.js", options)
+        .transform(babelify)
+        .bundle()
+        .pipe(stream("javascript.js"))
+        .pipe(cleanup)
+        .pipe(squish)
+        .pipe(gulp.dest("./public/"));
+}, {
+    options: {
+        production: "  production ready"
+    }
 });
 
-// Optimize vector images
-gulp.task("optimize-vectors", function () {
-    return gulp.src(vectors.input)
-        .pipe(svgo())
-        .pipe(gulp.dest(vectors.output));
-});
+// Optimize images
+gulp.task("optimize", "Optimize images.", function () {
 
-// Optimize bitmapped images
-gulp.task("optimize-bitmaps", function () {
-    return gulp.src(bitmaps.input)
+    var images = [
+        './public/images/**/*.png',
+        './public/images/**/*.jpg',
+        './public/images/**/*.jpeg',
+        './public/images/**/*.gif',
+        './public/images/**/*.svg'
+    ];
+
+    return gulp.src(images)
         .pipe(imagemin())
-        .pipe(gulp.dest(bitmaps.output));
+        .pipe(gulp.dest("./public/images/"));
 });
 
-// Rebuild makes the styles and scripts
-gulp.task("rebuild", ["styles", "scripts"]);
+// Increment version numbers
+gulp.task("bump", "Increment version number.", function () {
 
-// Optimize resizes the images
-gulp.task("optimize", ["optimize-bitmaps", "optimize-vectors"]);
+    var version;
 
-// Default runs everything
-gulp.task("default", ["rebuild", "optimize"]);
+    if (gutil.env.version) {
+        version = {version: gutil.env.version};
+    }
+
+    return gulp.src(["./package.json", "./bower.json"])
+        .pipe(bump(version))
+        .pipe(gulp.dest("./"));
+});
+
+// Rebuild everything
+gulp.task("rebuild", "Rebuild everything for the new site.", ["scripts", "styles"], noop, {
+    options: {
+        production: "  production ready"
+    }
+});
 
 // Watch job rebuilds and then watches for changes
-gulp.task("watch", ["rebuild"], function () {
-    gulp.watch([scripts.input], ["scripts"]);
-    gulp.watch([styles.input], ["styles"]);
+gulp.task("watch", "start watch, rebuilding on change", ["rebuild"], function () {
+    gulp.watch(["./lib/javascript/**/*.js"], ["scripts"]);
+    gulp.watch(["./lib/stylesheets/**/*.scss"], ["styles"]);
 });
+
+// Show help by default
+gulp.task("default", false, ["help"]);
