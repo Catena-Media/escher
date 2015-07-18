@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -45,8 +45,8 @@ namespace TDM\Escher;
  * Handles requests coming from the console
  * TODO: Make this not terrible.
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2014 Twist Digital Media
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2014 Twist Digital Media
  */
 
 class Console
@@ -69,23 +69,19 @@ class Console
 
         list ($vendor, $package, $className) = array_slice($args, 0, 3);
 
-
         $template = Template::instance();
 
         $template->loadTemplate(ROOTDIR . "/templates/.escher/presenter.class", "Class");
 
-        $template->assign(
-            array(
-                "Vendor" => $vendor,
-                "Package" => $package,
-                "ClassName" => $className,
-                "ProjectName" => $package,
-                "VendorName" => $vendor,
-                "YourName" => "You <you@example.com>",
-                "Date" => date("Y"),
-            ),
-            "Class"
-        );
+        $template->assign(array(
+            "Vendor" => $vendor,
+            "Package" => $package,
+            "ClassName" => $className,
+            "ProjectName" => $package,
+            "VendorName" => $vendor,
+            "YourName" => "You <you@example.com>",
+            "Date" => date("Y"),
+        ), "Class");
 
         // Where should this file go?
         $filename = ROOTDIR . "/lib/classes/" . implode("/", [$vendor, $package, "Presenters", $className]) . ".php";

@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,11 +44,11 @@ namespace TDM\Escher;
  *
  * A really simple page templater
  *
- * @author      Richard Mann <richard.mann@twistdigital.co.uk>
- * @author      James Dempster <james.dempster@twistdigital.co.uk>
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @todo        Rework the error handling, it's shocking.
- * @copyright   2006-2014 Twist Digital Media
+ * @author Richard Mann <richard.mann@twistdigital.co.uk>
+ * @author James Dempster <james.dempster@twistdigital.co.uk>
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @todo Rework the error handling, it's shocking.
+ * @copyright 2006-2014 Twist Digital Media
  */
 
 class Template extends Singleton
@@ -60,18 +60,18 @@ class Template extends Singleton
      *   Comment written here
      * -->
      *
-     * @var     bool
-     * @access  public
+     * @var bool
+     * @access public
      */
-    public $removeHTMLComments = true;
+    public $removeHTMLComments = YES;
 
     /**
      * If any unsused names are found {example} will be removed
      *
-     * @var     bool
-     * @access  public
+     * @var bool
+     * @access public
      */
-    public $removeUnusedNames = true;
+    public $removeUnusedNames = YES;
 
     /**
      * Location of where the cache is to be stored, static var affects all template objects
@@ -82,58 +82,54 @@ class Template extends Singleton
      * $tmpl = new Template();
      * </code>
      *
-     * @var     string
-     * @access  public
+     * @var string
+     * @access public
      */
     public static $cacheLocation;
 
     /**
      * Code Block Containers
-     *
-     * @var     array
-     * @access  private
+     * @var array
+     * @access private
      */
-    private $codeBlocks      = array();
+    private $codeBlocks = array();
     private $codeBlocksCache = array();
 
     /**
      * Container for the masks registered on this object
-     *
-     * @var     array
-     * @access  public
+     * @var array
+     * @access private
      */
     private static $maskList = array();
 
     /**
      * Container for post-parse processors
-     *
+     * @var array
+     * @access private
      */
     private $processorList = array();
 
     /**
      * Error constants
-     *
-     * @const   int
-     * @access  public
+     * @const int
+     * @access public
      */
     const ERROR_INVALID_NAMESPACE = 1;
-    const ERROR_FILE_NOT_FOUND    = 2;
-    const ERROR_NOT_VALID         = 3;
+    const ERROR_FILE_NOT_FOUND = 2;
+    const ERROR_NOT_VALID = 3;
 
     /**
      * Sets the file extension for template files
-     *
-     * @const   string
-     * @access  public
+     * @const string
+     * @access public
      */
     const CACHE_EXTENSION = '.template';
 
     /**
      * Escher\Template::instance()
-     *
      * @ignore
-     **/
-    public static function &instance($new = false)
+     */
+    public static function &instance($new = NO)
     {
         // Get a singleton
         $template = parent::instance($new);
@@ -148,9 +144,8 @@ class Template extends Singleton
 
     /**
      * Escher\Template::__construct()
-     *
      * @ignore
-     **/
+     */
     public function __construct()
     {
         // Set default cache location
@@ -159,7 +154,7 @@ class Template extends Singleton
         }
 
         // Initialise the code block container
-        $this->codeBlocks      = $this->emptyCodeBlock();
+        $this->codeBlocks = $this->emptyCodeBlock();
         $this->codeBlocksCache = $this->emptyCodeBlock();
 
         // Set up some common masks
@@ -188,9 +183,9 @@ class Template extends Singleton
      * echo $template->render('Main'); // all 'Yes' string will be 'Oui'
      * </code>
      *
-     * @param mixed $callback valid callback {@link http://php.net/callback}
+     * @param callable $callback - valid callback {@link http://php.net/callback}
      * @return
-     **/
+     */
     public function addProcessor($callback)
     {
         if (is_callable($callback)) {
@@ -223,15 +218,15 @@ class Template extends Singleton
      *
      * In the above example YesOrNo will be parsed with Yes
      *
-     * @param string $maskName name of the mask
-     * @param mixed  $callback valid callback {@link http://php.net/callback}
+     * @param string $maskName - name of the mask
+     * @param callable $callback - valid callback {@link http://php.net/callback}
      * @return
-     **/
+     */
     public static function addMask($maskName, $callback, $param = array())
     {
         if (is_callable($callback)) {
             self::$maskList[$maskName]['callback'] = $callback;
-            self::$maskList[$maskName]['param']    = $param;
+            self::$maskList[$maskName]['param'] = $param;
         } else {
             self::fault(self::ERROR_NOT_VALID, 'Callback Invalid');
         }
@@ -243,11 +238,11 @@ class Template extends Singleton
      * Given a mask name, will check to see if a mask exists if so
      * calls the mask with the value and returns mask value.
      *
-     * @access  private
-     * @param  string $maskName
-     * @param  string $value
+     * @access private
+     * @param string $maskName
+     * @param string $value
      * @return string
-     **/
+     */
     private function maskReplace($maskName, $value)
     {
         // Otherwise, check if this mask exists?
@@ -277,10 +272,10 @@ class Template extends Singleton
      *
      * Evaluates $value to Yes or No
      *
-     * @access  private
-     * @param  bool   $value
-     * @return string Yes or No
-     **/
+     * @access private
+     * @param bool $value
+     * @return string - Yes or No
+     */
     private function maskYesNo($value)
     {
         return $value ? 'Yes' : 'No';
@@ -291,10 +286,10 @@ class Template extends Singleton
      *
      * Evaluates $value to 'checked="checked"' or ''
      *
-     * @access  private
-     * @param  bool   $value
-     * @return string 'checked="checked"' or ''
-     **/
+     * @access private
+     * @param bool $value
+     * @return string - 'checked="checked"' or ''
+     */
     private function maskCheckboxSelected($value)
     {
         if ($value === "no") {
@@ -309,10 +304,10 @@ class Template extends Singleton
      *
      * Evaluates $value to 'selected="selected"' or ''
      *
-     * @access  private
-     * @param  bool   $value
-     * @return string 'selected="selected"' or ''
-     **/
+     * @access private
+     * @param bool $value
+     * @return string - 'selected="selected"' or ''
+     */
     private function maskOptionSelected($value, $selected)
     {
         return ($value === $selected) ? ' selected="selected"' : '';
@@ -323,11 +318,11 @@ class Template extends Singleton
      *
      * Formats a passed date to the passed format
      *
-     * @access  private
-     * @param  string $date
-     * @param  string $format
-     * @return string formatted date, or original string on error
-     **/
+     * @access private
+     * @param string $date
+     * @param string $format
+     * @return string - formatted date, or original string on error
+     */
     private function maskDateFormat($date, $format)
     {
         if ($timestamp = strtotime($date)) {
@@ -357,17 +352,18 @@ class Template extends Singleton
      * To specify subcodeblock use a colon to move down the tree e.g Table1:Row
      * would be a codeblock named Row that is nested inside a codeblock named Table
      *
-     * @access  public
-     * @param  string $templateFilename The filename of the template to load
-     * @param  string $namespace        The namespace to load the template into.
-     * @param  string $codeBlock        (optional) The name of a specific code block in the template to load.
-     *                                  If not specified, all block will be loaded
-     * @return bool   false on error
+     * @access public
+     * @param string $templateFilename - The filename of the template to load
+     * @param string $namespace - The namespace to load the template into.
+     * @param string $codeBlock (optional) - The name of a specific code block in the template to load.
+     *     If not specified, all blocks will be loaded
+     * @return bool - NO on error
      */
     public function loadTemplate($templateFilename, $namespace, $codeBlock = '')
     {
         // Check the template file specified is valid
         if (is_readable($templateFilename)) {
+
             // Get the proper path to the template. We'll need
             // this later when we're caching it. We don't want
             // to cache the same files twice because they were
@@ -377,7 +373,7 @@ class Template extends Singleton
         } else {
             // Trigger a fault as the template file could not be found
             $this->fault(self::ERROR_FILE_NOT_FOUND, $templateFilename);
-            return false;
+            return NO;
         }
 
         // Lets get this template into our cache if it isn't in there
@@ -426,12 +422,12 @@ class Template extends Singleton
      * To specify subcodeblock use a colon to move down the tree e.g Table1:Row
      * would be a codeblock named Row that is nested inside a codeblock named Table
      *
-     * @access  public
-     * @param  string $templateSource String to use as template
-     * @param  string $namespace      The namespace to load the template into.
-     * @param  string $codeBlock      (optional) The name of a specific code block in the template to load.
-     *                                If not specified, all block will be loaded
-     * @return bool   false on error
+     * @access public
+     * @param string $templateSource - String to use as template
+     * @param string $namespace - The namespace to load the template into.
+     * @param string $codeBlock (optional) - The name of a specific code block in the template to load.
+     *     If not specified, all block will be loaded
+     * @return bool - NO on error
      */
     public function loadTemplateFromString($templateSource, $namespace, $codeBlock = '')
     {
@@ -466,17 +462,17 @@ class Template extends Singleton
         // Fill it with the parsed code blocks
         $codeBlockPointer = $this->codeBlocksCache;
 
-        return true;
+        return YES;
     }
 
     /**
      * Escher\Template::buildCodeBlocks()
      *
-     * @access  private
-     * @param  string $templateSource
-     * @param  array  $codeBlock
+     * @access private
+     * @param string $templateSource
+     * @param array $codeBlock
      * @return void
-     **/
+     */
     private function buildCodeBlocks($templateSource, &$codeBlock)
     {
         $codeBlock["code"] = preg_replace_callback(
@@ -491,12 +487,12 @@ class Template extends Singleton
     /**
      * Escher\Template::buildChildCodeBlocks()
      *
-     * @access  private
-     * @param  string $blockName
-     * @param  string $content
-     * @param  array  $codeBlock byRef
-     * @return string Value to replace the found block with
-     **/
+     * @access private
+     * @param string $blockName
+     * @param string $content
+     * @param array $codeBlock byRef
+     * @return string - Value to replace the found block with
+     */
     private function buildChildCodeBlocks($blockName, $content, &$codeBlock)
     {
         // Create the code block for this child to use
@@ -511,14 +507,14 @@ class Template extends Singleton
     /**
      * Escher\Template::_new_code_block()
      *
-     * @access  private
+     * @access private
      * @return array
-     **/
+     */
     private function emptyCodeBlock()
     {
         return array(
-            'code'      => '',
-            'children'  => array(),
+            'code' => '',
+            'children' => array(),
             'variables' => array(),
             'segmentor' => array(),
         );
@@ -527,47 +523,47 @@ class Template extends Singleton
     /**
      * Escher\Template::cacheValid()
      *
-     * @access  private
-     * @param  string $filename
+     * @access private
+     * @param string $filename
      * @return bool
-     **/
+     */
     private function cacheValid($filename)
     {
         $cacheFilename = self::$cacheLocation . '/' . sha1(realpath($filename)) . self::CACHE_EXTENSION;
         if (file_exists($filename) && file_exists($cacheFilename)) {
             $fileIsNotModified = filemtime($filename) === filemtime($cacheFilename);
             if ($fileIsNotModified) {
-                return true;
+                return YES;
             }
         }
 
-        return false;
+        return NO;
     }
 
     /**
      * Escher\Template::cacheRead()
      *
-     * @access  private
-     * @param  string $filename
-     * @return array  template from cache as a codeblock array, bool false on error
-     **/
+     * @access private
+     * @param string $filename
+     * @return array - template from cache as a codeblock array, bool NO on error
+     */
     private function cacheRead($filename)
     {
         $cacheFilename = self::$cacheLocation . '/' . sha1(realpath($filename)) . self::CACHE_EXTENSION;
         if (file_exists($cacheFilename)) {
             return unserialize(file_get_contents($cacheFilename));
         } else {
-            return false;
+            return NO;
         }
     }
 
     /**
      * Escher\Template::cacheWrite()
      *
-     * @param  string $filename
-     * @param  array  $data     codeblock wanting to be cached
+     * @param string $filename
+     * @param array $data - codeblock wanting to be cached
      * @return bool
-     **/
+     */
     private function cacheWrite($filename, $data)
     {
         $cacheFilename = self::$cacheLocation . '/' . sha1(realpath($filename)) . self::CACHE_EXTENSION;
@@ -577,10 +573,10 @@ class Template extends Singleton
     /**
      * Escher\Template::getNamespace()
      *
-     * @param  string $nameSpace
-     * @param  array  $codeBlock optional byRef
-     * @return array  Reference to the passed codeBlock
-     **/
+     * @param string $nameSpace
+     * @param array $codeBlock (optional, reference)
+     * @return array - Reference to the passed codeBlock
+     */
     private function &getNamespace($nameSpace, &$codeBlock = null)
     {
         // Break up the passed namespace so we can iterate through it
@@ -614,14 +610,14 @@ class Template extends Singleton
     /**
      * Escher\Template::createNamespace()
      *
-     * @access  private
-     * @param  string $nameSpace
-     * @return array  Reference to the newly created nameSpace in $this->codeBlocks
-     **/
+     * @access private
+     * @param string $nameSpace
+     * @return array - Reference to the newly created nameSpace in $this->codeBlocks
+     */
     private function &createNamespace($nameSpace)
     {
         // Break up the namespace so we can iterate through it
-        $nameArray    = explode(':', $nameSpace);
+        $nameArray = explode(':', $nameSpace);
 
         // The final element contains the name of the
         // new space we are creating
@@ -662,15 +658,15 @@ class Template extends Singleton
      * echo $template->render('Main');
      * </code>
      *
-     * @param  string $nameSpace
-     * @param  string $cache     Experimental caching feature. The REQUEST_URI of this page, if we want to cache it
-     * @return string Parsed Template
-     **/
+     * @param string $nameSpace
+     * @param string $cache - Experimental caching feature. The REQUEST_URI of this page, if we want to cache it
+     * @return string - Parsed Template
+     */
     public function render($nameSpace)
     {
         // Get a handle on this namespace
         $codeBlock =& $this->getNamespace($nameSpace);
-        $value     =  $this->parseBlock($codeBlock);
+        $value = $this->parseBlock($codeBlock);
 
         // Substitute variables
         if (!empty($this->codeBlocks['variables'])) {
@@ -678,12 +674,12 @@ class Template extends Singleton
         }
 
         // Strip out unused elements
-        if ($this->removeUnusedNames === true) {
+        if ($this->removeUnusedNames === YES) {
             $value = preg_replace('/{{?[\w\.]+(\[\w+\])?}}?/', '', $value);
         }
 
         // Strip out unused comments
-        if ($this->removeHTMLComments === true) {
+        if ($this->removeHTMLComments === YES) {
             $value = preg_replace('/<!--@.*?-->/s', '', $value);
         }
 
@@ -701,10 +697,10 @@ class Template extends Singleton
     /**
      * Escher\Template::encode()
      *
-     * @access  private
-     * @param  string $code
-     * @return string Encoded code to protect characters through the templater
-     **/
+     * @access private
+     * @param string $code
+     * @return string - Encoded code to protect characters through the templater
+     */
     private function encode(&$code)
     {
         $code = str_replace(array('"', "'"), array('__DQUOT__', '__QUOT__'), $code);
@@ -713,10 +709,10 @@ class Template extends Singleton
     /**
      * Escher\Template::decode()
      *
-     * @access  private
-     * @param  string $code
-     * @return string Inverse of encode
-     **/
+     * @access private
+     * @param string $code
+     * @return string - Inverse of encode
+     */
     private function decode(&$code)
     {
         $code = str_replace(array('__QUOT__', '__DQUOT__'), array("'", '"'), $code);
@@ -725,10 +721,10 @@ class Template extends Singleton
     /**
      * Escher\Template::parseBlock()
      *
-     * @access  private
-     * @param  mixed  $codeBlock
-     * @return string Value for that block and all it's children after being parsed
-     **/
+     * @access private
+     * @param mixed $codeBlock
+     * @return string - Value for that block and all it's children after being parsed
+     */
     private function parseBlock(&$codeBlock)
     {
         // Only process vars if instructed to, and vars are available.
@@ -746,14 +742,14 @@ class Template extends Singleton
                     $segmentor = $codeBlock['segmentor'][0];
                     $dataSource = array();
                     foreach ($codeBlock['variables'] as $record) {
-                        $dataSource[$record[$segmentor]]        = $record;
+                        $dataSource[$record[$segmentor]] = $record;
                         $childDataSource[$record[$segmentor]][] = $record;
                     }
                 }
 
                 // Row counter and max rows
-                $rowCount       = 1;
-                $dataSourceMax  = count($codeBlock['variables']);
+                $rowCount = 1;
+                $dataSourceMax = count($codeBlock['variables']);
 
                 // Loop through the variables
                 foreach ($dataSource as $segment => $record) {
@@ -765,14 +761,14 @@ class Template extends Singleton
                     $rowValue = $this->nameReplace($record, $codeBlock['code']);
 
                     // Add in the custom replacements
-                    $find      = array();
-                    $replace   = array();
+                    $find = array();
+                    $replace = array();
 
                     // Row counter
-                    $find[]    = '{templateRowNum}';
+                    $find[] = '{templateRowNum}';
                     $replace[] = $rowCount;
 
-                    $find[]    = '{templateRowAlpha}';
+                    $find[] = '{templateRowAlpha}';
                     $replace[] = chr(64 + $rowCount);
 
                     // If there are children
@@ -793,7 +789,7 @@ class Template extends Singleton
                             }
 
                             $blockValue = $this->parseBlock($childCodeBlock);
-                            $find[]    = '{{' . $blockName . '}}';
+                            $find[] = '{{' . $blockName . '}}';
                             $replace[] = $blockValue;
                         }
                     }
@@ -822,14 +818,14 @@ class Template extends Singleton
 
         // If there are children
         if (!empty($codeBlock['children'])) {
-            $find    = array();
+            $find = array();
             $replace = array();
 
             // Loop through the child blocks, parse them and substitute them
             // into the parsed code.
             foreach ($codeBlock['children'] as $blockName => $childCodeBlock) {
                 $blockValue = $this->parseBlock($childCodeBlock);
-                $find[]    = '{{' . $blockName . '}}';
+                $find[] = '{{' . $blockName . '}}';
                 $replace[] = $blockValue;
             }
 
@@ -847,11 +843,11 @@ class Template extends Singleton
      * Searches for names that need replacing, including
      * names with masks applied to them
      *
-     * @access  private
-     * @param  array  $variableList
-     * @param  string $code
+     * @access private
+     * @param array $variableList
+     * @param string $code
      * @return string
-     **/
+     */
     private function nameReplace($variableList, $code)
     {
         // If there are variables to replace
@@ -861,6 +857,11 @@ class Template extends Singleton
                 // If this is a callback, execute it first
                 if (!is_scalar($variableValue) && is_callable($variableValue)) {
                     $variableValue = call_user_func($variableValue);
+                }
+
+                // If this is an escher view, render it first
+                if ($variableValue instanceof View) {
+                    $variableValue = $variableValue->render();
                 }
 
                 // Variables enclosed in {{}} should be replaced raw.
@@ -926,8 +927,8 @@ class Template extends Singleton
      *
      * If an invalid value for $dataValues is passed, a {@link VaildationException} will be thrown
      *
-     * @param array  $dataValues
-     * @param string $nameSpace  (optional) The namespace within this template to place the variable in
+     * @param array $dataValues
+     * @param string $nameSpace (optional) - The namespace within this template to place the variable in
      */
     public function assign($dataValues, $nameSpace = null)
     {
@@ -951,7 +952,7 @@ class Template extends Singleton
             if (sizeof($segmentors)) {
                 foreach ($segmentors as $segmentor => $segmentorTarget) {
                     // Find the parent of the namespace identified by the segmentor
-                    $child  = substr($segmentorTarget, strrpos($segmentorTarget, ':') + 1);
+                    $child = substr($segmentorTarget, strrpos($segmentorTarget, ':') + 1);
                     $parent = substr($segmentorTarget, 0, -strlen($child) - 1);
 
                     // Load that parent and set a segmentor on it
@@ -1017,13 +1018,13 @@ class Template extends Singleton
      *
      * Removes the codeBlock specifed though namespace from the template
      *
-     * @access  public
+     * @access public
      * @param string $nameSpace
-     **/
+     */
     public function removeBlock($nameSpace)
     {
         // Break up the namespaces
-        $child  = substr($nameSpace, strrpos($nameSpace, ':') + 1);
+        $child = substr($nameSpace, strrpos($nameSpace, ':') + 1);
         $parent = substr($nameSpace, 0, -strlen($child) - 1);
 
         // Load the parent code block
@@ -1038,14 +1039,13 @@ class Template extends Singleton
      *
      * Retrives all varibles that have been assign to the namespace
      *
-     * @access  public
-     * @param  string $nameSpace
+     * @access public
+     * @param string $nameSpace
      * @return array
-     **/
+     */
     public function retrieveVar($nameSpace)
     {
         $codeBlock =& $this->getNamespace($nameSpace);
-
         return $codeBlock['variables'];
     }
 
@@ -1062,18 +1062,18 @@ class Template extends Singleton
      * is provided will remove all variables fom that namespace, to cascade into
      * any sub codeblock end your namespace with a : e.g. Main:Content:
      *
-     * @access  public
-     * @param string $nameSpace    The namespace within this template that contains the item to be removed
-     * @param string $variableName (optional) The name of the variable to remove
+     * @access public
+     * @param string $nameSpace - The namespace within this template that contains the item to be removed
+     * @param string $variableName (optional) - The name of the variable to remove
      */
     public function removeVar($nameSpace, $variableName = '')
     {
         // Check if we need to cascade
         if (substr($nameSpace, -1) === ':') {
-            $cascade = true;
+            $cascade = YES;
             $nameSpace = rtrim($nameSpace, ':');
         } else {
-            $cascade = false;
+            $cascade = NO;
         }
 
         // Load up the codeblock
@@ -1081,7 +1081,7 @@ class Template extends Singleton
 
         // With no variable name, we remove all vars
         if (empty($variableName)) {
-            if ($cascade === true) {
+            if ($cascade === YES) {
                 $codeBlock = $this->cascadeRemoveVar($codeBlock);
             } else {
                 $codeBlock['variables'] = array();
@@ -1091,7 +1091,7 @@ class Template extends Singleton
             unset($codeBlock['variables'][$variableName]);
         }
 
-        return true;
+        return YES;
     }
 
     /**
@@ -1099,9 +1099,9 @@ class Template extends Singleton
      *
      * Removes all variables from a codeblock and all child variables from the same block
      *
-     * @access  private
-     * @param  string $codeBlock The block to have its vars trashed
-     * @return array  The processed codeBlock
+     * @access private
+     * @param string $codeBlock - The block to have its vars trashed
+     * @return array - The processed codeBlock
      */
     private function cascadeRemoveVar($codeBlock)
     {
@@ -1115,9 +1115,8 @@ class Template extends Singleton
 
     /**
      * Escher\Template::fault()
-     *
      * @ignore
-     **/
+     */
     protected static function fault($errorNum = 0, $message = '')
     {
         switch ($errorNum) {

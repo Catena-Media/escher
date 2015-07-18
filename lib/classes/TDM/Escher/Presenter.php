@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -53,7 +53,7 @@ namespace TDM\Escher;
  * </code>
  *
  * @package TDM\Escher
- * @author  Mike Hall <mike.hall@twistdigital.co.uk>
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
  */
 
 abstract class Presenter

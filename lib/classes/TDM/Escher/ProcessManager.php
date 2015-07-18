@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,9 +44,9 @@ namespace TDM\Escher;
  *
  * A Process Manager for PHP batch scripts, with support for locking and logging
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2005-2014 Twist Digital Media
- * @todo        Needs a complete overall, makes some unwarranted assumptions about writable paths
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2005-2014 Twist Digital Media
+ * @todo Needs a complete overall, makes some unwarranted assumptions about writable paths
  */
 
 class ProcessManager
@@ -54,40 +54,40 @@ class ProcessManager
     /**
      * Contains the path to the lock file
      *
-     * @var     string
-     * @access  private
+     * @var string
+     * @access private
      */
     private static $lockFilePath = null;
 
     /**
      * Contains the path to the log file
      *
-     * @var     string
-     * @access  private
+     * @var string
+     * @access private
      */
     private static $logFilePath = null;
 
     /**
      * Contains an instance of this object
      *
-     * @var     object
-     * @access  private
+     * @var object
+     * @access private
      */
     private static $processHandler = null;
 
     /**
      * Should I echo log messages?
      *
-     * @var     bool
-     * @access  public
+     * @var bool
+     * @access public
      */
-    public static $verbose = false;
+    public static $verbose = NO;
 
     /**
      * Constructor
      *
-     * @return  void
-     * @access  private
+     * @return void
+     * @access private
      * @ignore
      */
     private function __construct()
@@ -99,8 +99,8 @@ class ProcessManager
     /**
      * Lock current script
      *
-     * @return  bool    TRUE on successful lock, FALSE on error
-     * @access  private
+     * @return bool - YES on successful lock, NO on error
+     * @access private
      */
     private static function realLock()
     {
@@ -108,7 +108,7 @@ class ProcessManager
         if (!file_exists(self::$lockFilePath)) {
             return file_put_contents(self::$lockFilePath, getmypid());
         }
-        return false;
+        return NO;
     }
 
     /**
@@ -116,7 +116,7 @@ class ProcessManager
      *
      * Removes the current lock file, if it was created by this process
      *
-     * @access  private
+     * @access private
      */
     private static function realUnlock()
     {
@@ -129,8 +129,8 @@ class ProcessManager
     /**
      * Write log file entry
      *
-     * @param   string  $msg    Text to log
-     * @access  public
+     * @param string $msg - Text to log
+     * @access public
      */
     public static function log()
     {
@@ -151,8 +151,8 @@ class ProcessManager
     /**
      * Public lock file interface
      *
-     * @return  bool    TRUE on successful lock, FALSE on error
-     * @access  public
+     * @return bool - YES on successful lock, NO on error
+     * @access public
      */
     public static function lock()
     {
@@ -160,19 +160,19 @@ class ProcessManager
         clearstatcache();
         if (file_exists(self::$lockFilePath)) {
             self::log('Process is locked');
-            return false;
+            return NO;
         } elseif (self::realLock()) {
             self::log('Lock obtained');
-            return true;
+            return YES;
         }
         self::log('Failed to obtain file lock');
-        return false;
+        return NO;
     }
 
     /**
      * Public unlock file interface
      *
-     * @access  public
+     * @access public
      */
     public static function unlock()
     {
@@ -194,7 +194,7 @@ class ProcessManager
     /**
      * Initialise system
      *
-     * @access  public
+     * @access public
      */
     public static function init()
     {
@@ -208,7 +208,7 @@ class ProcessManager
      *
      * Automatically unlocks the process at shutdown
      *
-     * @access  public
+     * @access public
      */
     public function __destruct()
     {

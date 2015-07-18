@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,9 +44,9 @@ namespace TDM\Escher;
  *
  * Helper functions for dealing with this HTTP request
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2008-2013 Twist Digital Media
- * @todo        Better documentation
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2008-2013 Twist Digital Media
+ * @todo Better documentation
  */
 
 class CurrentRequest
@@ -132,9 +132,11 @@ class CurrentRequest
     {
         // Just get PHP to do it
         if (function_exists('apache_request_headers')) {
+
             $headers = apache_request_headers();
 
         } else {
+
             // Work it out by hand
             static $headers;
             if (empty($headers)) {

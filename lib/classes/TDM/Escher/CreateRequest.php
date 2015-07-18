@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,18 +44,18 @@ namespace TDM\Escher;
  *
  * Make an HTTP request to some external resource
  *
- * @author    Mike Hall <mike.hall@twistdigital.co.uk>
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
  * @copyright 2005-2013 Twist Digital Media
- * @todo      Error handling is pretty spotty, could do better.
- * @todo      Better documentation
+ * @todo Error handling is pretty spotty, could do better.
+ * @todo Better documentation
  */
 
 class CreateRequest
 {
     // Error codes
-    const CANNOT_OPEN_SOCKET       = -10;
-    const SOCKET_TIMED_OUT         = -20;
-    const CONNECT_TIMED_OUT        = -21;
+    const CANNOT_OPEN_SOCKET = -10;
+    const SOCKET_TIMED_OUT = -20;
+    const CONNECT_TIMED_OUT = -21;
     const FAILED_WRITING_TO_SOCKET = -30;
 
     // HTTP line feed
@@ -63,8 +63,8 @@ class CreateRequest
 
     // Default options
     public $defaultHTTPVersion = 1.1;
-    public $maxTimeoutRetries  = 3;
-    public $defaultTimeout     = 30.0;
+    public $maxTimeoutRetries = 3;
+    public $defaultTimeout = 30.0;
     public $defaultReadTimeout = 30.0;
 
     /**
@@ -159,6 +159,7 @@ class CreateRequest
         // Read chunk lengths from the data stream
         $buffer = tmpfile();
         while ($length = fgets($socket, 128)) {
+
             // Lengths may contain a ; terminator for chunk extensions.
             $length = substr($length, 0, strpos($length, ";") ?: -2);
 
@@ -186,10 +187,11 @@ class CreateRequest
         // Check for a cached connection
         static $connections = [];
         if (isset($connections[$specification]) && is_resource($connections[$specification])) {
+
             // There is a connection! But it might be dead. Check.
-            $socketMetaData    = @stream_get_meta_data($connections[$specification]);
+            $socketMetaData = @stream_get_meta_data($connections[$specification]);
             $socketHasTimedOut = !empty($socketMetaData['timed_out']);
-            $socketIsEOF       = !empty($socketMetaData['eof']);
+            $socketIsEOF = !empty($socketMetaData['eof']);
 
             // Return a socket if we have one
             if (!$socketHasTimedOut && !$socketIsEOF) {
@@ -225,6 +227,7 @@ class CreateRequest
 
         // Include passed data, if set
         if (sizeof($data)) {
+
             if ($method === 'POST' && empty($headers['Content-Type'])) {
                 $headers['Content-Type'] = 'application/x-www-form-urlencoded';
             }
@@ -244,11 +247,11 @@ class CreateRequest
         // Setup the default options
         $defaultOptions = array(
             'protocol_version' => $this->defaultHTTPVersion,
-            'method'           => strtoupper($method),
-            'timeout'          => $this->defaultTimeout,
-            'read_timeout'     => $this->defaultReadTimeout,
-            'ignore_errors'    => true,
-            'max_retries'      => $this->maxTimeoutRetries,
+            'method' => strtoupper($method),
+            'timeout' => $this->defaultTimeout,
+            'read_timeout' => $this->defaultReadTimeout,
+            'ignore_errors' => true,
+            'max_retries' => $this->maxTimeoutRetries,
         );
 
         // Combine with other context options
@@ -264,13 +267,13 @@ class CreateRequest
 
         // Merge in defaults to ensure we always have a complete array
         $url = array_merge(array(
-            "scheme"   => "http",
-            "host"     => "localhost",
-            "port"     => 80,
-            "user"     => null,
-            "pass"     => null,
-            "path"     => "/",
-            "query"    => "",
+            "scheme" => "http",
+            "host" => "localhost",
+            "port" => 80,
+            "user" => null,
+            "pass"    => null,
+            "path" => "/",
+            "query" => "",
             "fragment" => "",
         ), $url);
 
@@ -292,6 +295,7 @@ class CreateRequest
         // Write to the socket
         $bytesWritten = fwrite($socket, $requestString);
         if ($bytesWritten !== strlen($requestString)) {
+
             // We failed to write to this socket, so kill it.
             fclose($socket);
 
@@ -331,6 +335,7 @@ class CreateRequest
 
         // Check for redirects
         if (preg_match('#^HTTP/1.[01] 30[123]#i', $headers["status"]) && !empty($options["follow_location"])) {
+
             // In the event of a redirect, seek a location header
             if (isset($headers["location"])) {
                 $url = array_merge($url, parse_url($headers["location"]));

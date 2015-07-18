@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -46,8 +46,8 @@ namespace TDM\Escher;
  * abstract class, and then use $instance = YourClass::instance() to get
  * a singleton instance of that class.
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2014 Twist Digital Media
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2014 Twist Digital Media
  */
 
 abstract class Singleton
@@ -55,8 +55,8 @@ abstract class Singleton
     /**
      * Escher\Singleton::instance()
      *
-     * @param boolean $new Get a new instance, not a singleton
-     * @return object The instance
+     * @param boolean $new - Get a new instance, not a singleton
+     * @return object - The instance
      **/
     public static function &instance($new = false)
     {

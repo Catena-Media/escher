@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,9 +44,9 @@ namespace TDM\Escher;
  *
  * A really simple page timer
  *
- * @author      Scott Culverhouse <scott.culverhouse@twistdigital.co.uk>
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2005-2013 Twist Digital Media
+ * @author Scott Culverhouse <scott.culverhouse@twistdigital.co.uk>
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2005-2013 Twist Digital Media
  */
 
 class Timer

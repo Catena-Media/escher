@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,14 +44,15 @@ namespace TDM\Escher;
  *
  * The View base class
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2014 Twist Digital Media
- * @todo        Better documentation
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2014 Twist Digital Media
+ * @todo Better documentation
  */
 
 abstract class View
 {
     public $template;
+    protected $namespace;
 
     public function __construct()
     {

@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -44,22 +44,34 @@ namespace TDM\Escher;
  *
  * A really simple router
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2014 Twist Digital Media
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2014 Twist Digital Media
  */
 
 class Router
 {
-    // Static routes are stored in here, in the format ["GET"]["/"] = $callback
-    private $fastRoutes   = [];
+    /**
+     * Static routes are stored in here, in the format ["GET"]["/"] = $callback
+     * @var array
+     * @access private
+     */
+    private $fastRoutes = [];
 
-    // Slower, wildcard, routes are stored in these variables
-    private $slowRoutes   = [];
+    /**
+     * Slower, wildcard, routes are stored in these variables
+     * @var array
+     * @access private
+     */
+    private $slowRoutes = [];
     private $routeRegexes = [];
 
-    // This determines how many regex routes we check at once. Too big and
-    // we use a load of memory. Too small and we hit the PCRE engine too often.
-    // A chunk size of 10 seems to be a happy medium.
+    /**
+     * This determines how many regex routes we check at once. Too big and
+     * we use a load of memory. Too small and we hit the PCRE engine too often.
+     * A chunk size of 10 seems to be a happy medium.
+     * @var int
+     * @access public
+     */
     public $chunkSize = 10;
 
     /**
@@ -68,9 +80,9 @@ class Router
      * If the passed verb is POST, it returns POST. Otherwise, it returns GET. Escher\Router only
      * supports POST and GET verbs. We could do others, I suppose? But is there really a point for
      * a browser-based application framework?
-     *
-     * @param String $method The method to clean
-     * @return String A valid HTTP method
+     * @access private
+     * @param string $method - The method to clean
+     * @return string - A valid HTTP method
      */
     private function cleanMethod($method)
     {
@@ -90,20 +102,21 @@ class Router
      * Convert placeholders to regex format
      *
      * Translates the [:any]-style route placeholders into regex so we can use it for matching.
-     *
-     * @param String $path The path to translate
-     * @return String The translated path
+     * @access private
+     * @param string $path - The path to translate
+     * @return string - The translated path
      */
     private function convertPathToRegex($path)
     {
         return strtr($path, array(
-            '[:any]'   => '([^/]+)',
-            '[:all]'   => '([^/]+)',
-            '[:num]'   => '([0-9]+)',
+            '[:any]' => '([^/]+)',
+            '[:all]' => '([^/]+)',
+            '[:num]' => '([0-9]+)',
             '[:nonum]' => '([^0-9]+)',
             '[:alpha]' => '([A-Za-z]+)',
             '[:alnum]' => '([A-Za-z0-9]+)',
-            '[:hex]'   => '([A-Fa-f0-9]+)',
+            '[:hex]' => '([A-Fa-f0-9]+)',
+            '[:slug]' => '([0-9a-z\-]+)',
         ));
     }
 
@@ -112,10 +125,10 @@ class Router
      *
      * Registers a wildcare route in the routing table, and stores the regex
      * in an equivalent position in the regex table.
-     *
-     * @param String $method The HTTP-verb
-     * @param String $path The path to register
-     * @param Callable $callback The function/method to run for this route
+     * @access private
+     * @param string $method - The HTTP-verb
+     * @param string $path - The path to register
+     * @param callable $callback - The function/method to run for this route
      * @return void
      */
     private function registerWildcardRoute($method, $path, $callback)
@@ -137,9 +150,9 @@ class Router
      * and mark each chunk with a number of empty "dummy" groups at the
      * end of the expression. We can count these dummy groups later to find out
      * which of the expressions matched, and therefore where we should be routing.
-     *
-     * @param Array $chunk List of paths to match, in regex format
-     * @return String Compiled regular expression
+     * @access private
+     * @param array $chunk - List of paths to match, in regex format
+     * @return string - Compiled regular expression
      */
     private function compileRegexChunk($chunk)
     {
@@ -157,10 +170,10 @@ class Router
      * Searches the slow routing table for a match for the passed method and path
      * In the event that one is found, it returns the callback to run. Otherwise,
      * it return false.
-     *
-     * @param String $method The HTTP-verb to check (or * for generic)
-     * @param String $path The path to check
-     * @return Callable A route, or false on no match
+     * @access private
+     * @param string $method - The HTTP-verb to check (or * for generic)
+     * @param string $path - The path to check
+     * @return callable - A route, or false on no match
      */
     private function searchWildcardRoutes($method, $path)
     {
@@ -173,6 +186,7 @@ class Router
         // Get the list of regex routes for this method, and split it up into chunks
         $regexes = array_chunk($this->routeRegexes[$method], $this->chunkSize);
         foreach ($regexes as $tens => $chunk) {
+
             // Merge this chunk into a single regex expression
             // and test it. If there is no match, try the next chunk.
             $regex = $this->compileRegexChunk($chunk);
@@ -204,14 +218,9 @@ class Router
             if (isset($this->slowRoutes[$method][$routeNumber])) {
                 $route = $this->slowRoutes[$method][$routeNumber];
                 return function () use ($route, $matches) {
-                    call_user_func_array($route, $matches);
+                    return call_user_func_array($route, $matches);
                 };
             }
-
-            // Failed to route this request
-            return function () {
-                return CurrentRequest::returnCode(404);
-            };
         }
 
         // No matches found
@@ -223,10 +232,10 @@ class Router
      *
      * Takes either ($path, $callback) or ($method, $path, $callback)
      * and adds to the routing tables so we can route the request later.
-     *
-     * @param String $method The HTTP verb
-     * @param String $path The path for this route
-     * @param Callable $callback Where we route to
+     * @access public
+     * @param string $method - The HTTP verb
+     * @param string $path - The path for this route
+     * @param callable $callback - Where we route to
      * @return void
      */
     public function map()
@@ -274,10 +283,10 @@ class Router
      * Route a request
      *
      * Takes a method and a path, and returns an appropriate callback.
-     *
-     * @param String $method The HTTP-verb to check
-     * @param String $path The path to check
-     * @param Callable An appropriate callback for this route
+     * @access public
+     * @param string $method - The HTTP-verb to check
+     * @param string $path - The path to check
+     * @param callable - An appropriate callback for this route
      */
     public function route($method, $path)
     {
@@ -303,9 +312,6 @@ class Router
             return $route;
         }
 
-        // Cannot route this request - return a not found
-        return function () {
-            return CurrentRequest::returnCode(404);
-        };
+        return null;
     }
 }

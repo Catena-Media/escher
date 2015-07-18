@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -42,13 +42,19 @@ namespace TDM\Escher;
 /**
  * CouchDB
  *
- * Class for working with CouchDB.
+ * Abstract class for working with CouchDB.
  *
- * The base URL should be set using the Settings object, or passed to the constructor to override
+ * This class should be extended by the current project, to set the base url.
+ * <code>
+ *   class \MyCompany\MyProject\CouchDB extends \TDM\Escher\CouchDB
+ *   {
+ *       public static $baseUrl = 'http://mycouchserver.example.com:5984/mydatabase';
+ *   }
+ * </code>
  *
- * @author    Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright Twist Digital Media 2013-2015
- * @todo      A ground-up rewrite, as this code is shocking
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright Twist Digital Media 2013
+ * @todo A ground-up rewrite, as this code is shocking
  */
 
 class CouchDB extends Singleton implements REST
@@ -102,6 +108,7 @@ class CouchDB extends Singleton implements REST
             $body    = null;
 
         } else {
+
             // break into headers/body
             @list($headers, $body) = explode("\r\n\r\n", $reply, 2);
 
@@ -142,6 +149,14 @@ class CouchDB extends Singleton implements REST
         // Define the URL for the request
         $url = $couch->baseUrl . $resource;
 
+        // Merge in default options
+        $options = array_merge(
+            [
+                'max_redirects' => 0,
+            ],
+            $options
+        );
+
         // Process and return
         $reply = $couch->http->get($url, $headers, $options);
 
@@ -157,6 +172,14 @@ class CouchDB extends Singleton implements REST
         $url = $couch->baseUrl . $resource . "/_design/" . urlencode($design) . "/_view/" . urlencode($view);
         $url .= '?' . http_build_query(array_map("json_encode", $params));
 
+        // Merge in default options
+        $options = array_merge(
+            [
+                'max_redirects' => 0,
+            ],
+            $options
+        );
+
         // Process and return
         $reply = $couch->http->get($url, $headers, $options);
         return $couch->handleReply($reply);
@@ -170,8 +193,17 @@ class CouchDB extends Singleton implements REST
         // Define the URL for the request
         $url = $couch->baseUrl . $resource;
 
+        // Merge in default options
+        $options = array_merge(
+            [
+                'max_redirects' => 0,
+            ],
+            $options
+        );
+
         // Process and return
         $reply = $couch->http->delete($url, $headers, $options);
+
         return $couch->handleReply($reply);
     }
 
@@ -189,8 +221,17 @@ class CouchDB extends Singleton implements REST
             $headers['Content-Type'] = 'application/json';
         }
 
+        // Merge in default options
+        $options = array_merge(
+            [
+                'max_redirects' => 0,
+            ],
+            $options
+        );
+
         // Process and return
         $reply = $couch->http->post($url, $data, $headers, $options);
+
         return $couch->handleReply($reply);
     }
 
@@ -208,8 +249,17 @@ class CouchDB extends Singleton implements REST
             $headers['Content-Type'] = 'application/json';
         }
 
+        // Merge in default options
+        $options = array_merge(
+            [
+                'max_redirects' => 0,
+            ],
+            $options
+        );
+
         // Process and return
         $reply = $couch->http->put($url, $data, $headers, $options);
+
         return $couch->handleReply($reply);
     }
 
@@ -221,15 +271,19 @@ class CouchDB extends Singleton implements REST
 
     public static function cleanupView($documents)
     {
-        return array_map(function ($document) {
-            // If this is an include docs view, only look at the document
-            if (isset($document["doc"])) {
-                $document = $document["doc"];
-            }
+        return array_map(
+            function ($document) {
 
-            // Clean up the CouchDB meta data
-            return self::cleanupDocument($document);
+                // If this is an include docs view, only look at the document
+                if (isset($document["doc"])) {
+                    $document = $document["doc"];
+                }
 
-        }, $documents);
+                // Clean up the CouchDB meta data
+                return self::cleanupDocument($document);
+
+            },
+            $documents
+        );
     }
 }

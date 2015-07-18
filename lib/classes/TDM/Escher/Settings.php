@@ -4,8 +4,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  *
  * Copyright (c) 2000-2014, Twist Digital Media
  * All rights reserved.
@@ -45,8 +45,8 @@ namespace TDM\Escher;
  * This class will import into itself all the keys it finds in settings.ini
  * file that it finds at the root level of the application.
  *
- * @author      Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright   2014 Twist Digital Media
+ * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @copyright 2014 Twist Digital Media
  */
 
 class Settings extends Singleton
