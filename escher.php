@@ -37,3 +37,8 @@ require ROOTDIR . "/lib/autoloader.php";
 if (is_readable(ROOTDIR . '/localconfig.php')) {
     include ROOTDIR . "/localconfig.php";
 }
+
+// If this project uses composer, include the composer autoloader
+if (is_readable(ROOTDIR . "/vendor/autoload.php")) {
+    require ROOTDIR . "/vendor/autoload.php";
+}
