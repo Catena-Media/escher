@@ -20,10 +20,7 @@ var gulp = require("gulp-help")(require("gulp")),
     uglify = require("gulp-uglify"),
     browserify = require("browserify"),
     babelify = require("babelify"),
-    strip = require("gulp-strip-debug"),
-
-    // Image stuff
-    imagemin = require("gulp-imagemin");
+    strip = require("gulp-strip-debug");
 
 // Compile stylesheets with optional minification
 gulp.task("styles", "Rebuild the SASS.", function () {
@@ -85,22 +82,6 @@ gulp.task("scripts", "Rebuild the javascript.", function () {
     options: {
         production: "  production ready"
     }
-});
-
-// Optimize images
-gulp.task("optimize", "Optimize images.", function () {
-
-    var images = [
-        './public/images/**/*.png',
-        './public/images/**/*.jpg',
-        './public/images/**/*.jpeg',
-        './public/images/**/*.gif',
-        './public/images/**/*.svg'
-    ];
-
-    return gulp.src(images)
-        .pipe(imagemin())
-        .pipe(gulp.dest("./public/images/"));
 });
 
 // Increment version numbers
