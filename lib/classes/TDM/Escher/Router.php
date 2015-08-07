@@ -188,9 +188,11 @@ class Router
             // Return a callback to execute the route, with parameters
             if (isset($this->slowRoutes[$method][$routeNumber])) {
                 $route = $this->slowRoutes[$method][$routeNumber];
-                return function () use ($route, $matches) {
-                    return call_user_func_array($route, $matches);
-                };
+                if (is_callable($route)) {
+                    return function () use ($route, $matches) {
+                        return call_user_func_array($route, $matches);
+                    };
+                }
             }
         }
 
