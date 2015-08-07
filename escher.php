@@ -6,8 +6,8 @@
  * Escher Framework v2.0
  *
  * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @package \TDM\Escher
+ * @license https://raw.github.com/twistdigital/escher/master/LICENSE
  */
 
 /**
@@ -34,7 +34,7 @@ require ROOTDIR . "/lib/autoloader.php";
 
 // If there is a local configuraton file defined for this project
 // (which there usually should be) then include it.
-if (is_readable(ROOTDIR . '/localconfig.php')) {
+if (is_readable(ROOTDIR . "/localconfig.php")) {
     include ROOTDIR . "/localconfig.php";
 }
 

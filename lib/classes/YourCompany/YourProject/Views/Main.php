@@ -41,11 +41,9 @@ class Main extends Escher\View
         $this->namespace = $this->template->loadTemplate(ROOTDIR . "/templates/main.html", "Main");
 
         // Load the cache busters
-        $scriptLastModified = filemtime(ROOTDIR . "/public/javascript.js");
-        $stylesLastModified = filemtime(ROOTDIR . "/public/stylesheet.css");
         $this->template->assign(array(
-            "scriptsLastModified" => $scriptLastModified,
-            "stylesLastModified" => $stylesLastModified,
+            "scriptsLastModified" => filemtime(ROOTDIR . "/public/javascript.js"),
+            "stylesLastModified" => filemtime(ROOTDIR . "/public/stylesheet.css"),
         ), $this->namespace);
 
         return $this->namespace;

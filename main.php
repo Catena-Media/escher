@@ -4,8 +4,8 @@
  * Your Project
  *
  * @copyright 2014 YourCompany
- * @package   \YourCompany\YourProject
- * @license   All Rights Reserved
+ * @package \YourCompany\YourProject
+ * @license All Rights Reserved
  */
 
 // Load Escher

@@ -29,10 +29,7 @@ class Homepage extends Main
         $parent = parent::loadView();
 
         // Load the homepage in as the content view
-        $this->namespace = $this->template->loadTemplate(
-            ROOTDIR . "/templates/homepage.html",
-            "{$parent}:Content"
-        );
+        $this->namespace = $this->template->loadTemplate(ROOTDIR . "/templates/homepage.html", "{$parent}:Content");
 
         // Return the namespace
         return $this->namespace;
