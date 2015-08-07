@@ -89,4 +89,37 @@ class Utils
         sort($array);
         return $array;
     }
+
+    /**
+     * Does the needle exist in the haystack?
+     *
+     * @param array $haystack
+     * @param mixed $needle
+     * @return boolean
+     */
+    public static function inArray(Array $haystack, $needle)
+    {
+        return in_array($needle, $haystack);
+    }
+
+    /**
+     * Flatten an array-of-arrays down into a single linear array.
+     * Optional $deep parameter determines whether to recurse into sub arrays, or just do a single pass
+     *
+     * @param array $array
+     * @param boolean $deep (optional)
+     * @return array
+     */
+    public static function arrayFlatten(Array $array, $deep = NO)
+    {
+        if ($deep === YES) {
+            $output = array();
+            array_walk_recursive($array, function ($v) use (&$output) {
+                $output[] = $v;
+            });
+            return $output;
+        }
+
+        return call_user_func_array("array_merge", $array);
+    }
 }
