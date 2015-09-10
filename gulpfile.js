@@ -19,8 +19,7 @@ var gulp = require("gulp-help")(require("gulp")),
     // Javascript stuff
     uglify = require("gulp-uglify"),
     browserify = require("browserify"),
-    babelify = require("babelify"),
-    strip = require("gulp-strip-debug");
+    babelify = require("babelify");
 
 // Compile stylesheets with optional minification
 gulp.task("styles", "Rebuild the SASS.", function () {
@@ -63,20 +62,22 @@ gulp.task("styles", "Rebuild the SASS.", function () {
 gulp.task("scripts", "Rebuild the javascript.", function () {
 
     var options = {debug: !gutil.env.production},
-        squish = gutil.noop(),
-        cleanup = gutil.noop();
+        squish = gutil.noop();
 
     if (!options.debug) {
-        squish = streamify(uglify());
-        cleanup = streamify(strip());
+        squish = uglify({
+            compress: {
+                drop_console: true,
+                drop_debugger: true
+            }
+        });
     }
 
     return browserify("./lib/javascript/main.js", options)
         .transform(babelify)
         .bundle()
         .pipe(stream("javascript.js"))
-        .pipe(cleanup)
-        .pipe(squish)
+        .pipe(streamify(squish))
         .pipe(gulp.dest("./public/"));
 }, {
     options: {
