@@ -3,9 +3,9 @@
 /**
  * Escher Framework v2.0
  *
- * @copyright 2000-2014 Twist Digital Media
+ * @copyright 2000-2015 Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -15,8 +15,8 @@ namespace TDM\Escher;
  *
  * A Process Manager for PHP batch scripts, with support for locking and logging
  *
- * @author Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright 2005-2014 Twist Digital Media
+ * @author Mike Hall
+ * @copyright 2014 Digital Design Labs Ltd
  * @todo Needs a complete overall, makes some unwarranted assumptions about writable paths
  */
 

@@ -3,9 +3,9 @@
 /**
  * Escher Framework v2.0
  *
- * @copyright 2000-2014 Twist Digital Media
+ * @copyright 2000-2015 Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -15,11 +15,11 @@ namespace TDM\Escher;
  *
  * A really simple page templater
  *
- * @author Richard Mann <richard.mann@twistdigital.co.uk>
- * @author James Dempster <james.dempster@twistdigital.co.uk>
- * @author Mike Hall <mike.hall@twistdigital.co.uk>
+ * @author Richard Mann
+ * @author James Dempster
+ * @author Mike Hall
+ * @copyright 2006-2014 Digital Design Labs Ltd
  * @todo Rework the error handling, it's shocking.
- * @copyright 2006-2014 Twist Digital Media
  */
 
 class Template extends Singleton

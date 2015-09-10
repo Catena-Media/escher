@@ -5,7 +5,6 @@
  *
  * @copyright 2015 YourCompany
  * @package \YourCompany\YourProject
- * @license All Rights Reserved
  */
 
 namespace YourCompany\YourProject\Views;
@@ -16,7 +15,7 @@ use \TDM\Escher as Escher;
  * Renders the common site elements
  *
  * @copyright 2015 Your Company
- * @author You <you@example.com>
+ * @author You
  */
 class Main extends Escher\View
 {

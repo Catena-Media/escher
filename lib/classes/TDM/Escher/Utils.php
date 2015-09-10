@@ -3,9 +3,9 @@
 /**
  * Escher Framework v2.0
  *
- * @copyright 2000-2014 Twist Digital Media
+ * @copyright 2000-2015 Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -15,8 +15,8 @@ namespace TDM\Escher;
  * This mostly exists to tidy up inconsistencies in the argument order in the PHP API, as well
  * as add a few other useful functions which are missing from PHP's otherwise verbose suite.
  *
- * @author Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright 2015 Twist Digital Media
+ * @author Mike Hall
+ * @copyright 2015 Digital Design Labs Ltd
  */
 class Utils
 {

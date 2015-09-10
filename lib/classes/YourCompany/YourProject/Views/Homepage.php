@@ -5,7 +5,6 @@
  *
  * @copyright 2015 YourCompany
  * @package \YourCompany\YourProject
- * @license All Rights Reserved
  */
 
 namespace YourCompany\YourProject\Views;
@@ -14,7 +13,7 @@ namespace YourCompany\YourProject\Views;
  * Displays the homepage
  *
  * @copyright 2015 Your Company
- * @author You <you@example.com>
+ * @author You
  */
 class Homepage extends Main
 {

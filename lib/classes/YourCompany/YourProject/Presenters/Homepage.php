@@ -5,7 +5,6 @@
  *
  * @copyright 2015 YourCompany
  * @package \YourCompany\YourProject
- * @license All Rights Reserved
  */
 
 namespace YourCompany\YourProject\Presenters;
@@ -19,7 +18,7 @@ use \YourCompany\YourProject as YourProject;
  * Handles requests for the homepage
  *
  * @copyright 2015 Your Company
- * @author You <you@example.com>
+ * @author You
  */
 class Homepage extends Escher\Presenter
 {

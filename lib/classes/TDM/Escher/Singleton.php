@@ -3,9 +3,9 @@
 /**
  * Escher Framework v2.0
  *
- * @copyright 2000-2014 Twist Digital Media
+ * @copyright 2000-2015 Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -17,8 +17,8 @@ namespace TDM\Escher;
  * abstract class, and then use $instance = YourClass::instance() to get
  * a singleton instance of that class.
  *
- * @author Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright 2014 Twist Digital Media
+ * @author Mike Hall
+ * @copyright 2014 Digital Design Labs Ltd
  */
 
 abstract class Singleton

@@ -3,16 +3,16 @@
 /**
  * Escher Framework v2.0
  *
- * @copyright 2000-2014 Twist Digital Media
- * @package   \TDM\Escher
- * @license   https://raw.github.com/twistdigital/escher/master/LICENSE
+ * @copyright 2000-2015 Digital Design Labs Ltd
+ * @package \TDM\Escher
+ * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 /**
  * PSR-0 Compatible Class Autoloader
  *
- * @author Mike Hall <mike.hall@twistdigital.co.uk>
- * @copyright 2005-2012 Twist Digital Media
+ * @author Mike Hall
+ * @copyright 2005-2012 Digital Design Labs Ltd
  * @param string $className - The class to load
  * @return void
  */
