@@ -12,14 +12,7 @@
 
 /**
  * YES and NO constants.
- *
- * I nicked these from Objective-C, because I like the way they promote readability.
- *
- * <code>
- *   if (isUserLoggedIn() === YES) {
- *       doLoginStuff();
- *   }
- * </code>
+ * I nicked these from Objective-C, because I like the readability.
  */
 define("YES", true);
 define("NO", false);
