@@ -34,7 +34,7 @@ class Main extends Escher\View
     protected function loadView()
     {
         // This content should be minified by default
-        $this->template->addProcessor(['\TDM\Escher\Minify\HTML', 'minify']);
+        $this->template->addProcessor(['\TDM\Escher\HTMLMinify', 'minify']);
 
         // Load the template file
         $this->namespace = $this->template->loadTemplate(ROOTDIR . "/templates/main.html", "Main");

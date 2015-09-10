@@ -3,12 +3,12 @@
 /**
  * Escher Framework v2.0
  *
- * @copyright 2000-2014 Twist Digital Media
+ * @copyright 2000-2015 Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://code.google.com/p/minify/source/browse/LICENSE.txt (BSD-3)
+ * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
-namespace TDM\Escher\Minify;
+namespace TDM\Escher;
 
 /**
  * HTML
@@ -23,7 +23,7 @@ namespace TDM\Escher\Minify;
  * @license https://code.google.com/p/minify/source/browse/LICENSE.txt (BSD-3)
  */
 
-class HTML
+class HTMLMinify
 {
     /**
      * "Minify" an HTML page
