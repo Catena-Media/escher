@@ -131,6 +131,16 @@ class CurrentRequest
         return null;
     }
 
+    public static function setHeader($header, $value)
+    {
+        header("$header: $value", YES);
+    }
+
+    public static function setVary($header)
+    {
+        header("Vary: $header", NO);
+    }
+
     public static function returnCode($code)
     {
         http_response_code($code);

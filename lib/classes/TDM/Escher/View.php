@@ -36,8 +36,23 @@ abstract class View
         // Noop
     }
 
+    protected function shouldRenderOutput()
+    {
+        return YES;
+    }
+
+    protected function willRenderOutput()
+    {
+        // Noop
+    }
+
     public function render($namespace = "Main")
     {
+        if ($this->shouldRenderOutput() === NO) {
+            return "";
+        }
+
+        $this->willRenderOutput();
         return $this->template->render($namespace);
     }
 }
