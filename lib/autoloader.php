@@ -9,10 +9,11 @@
  */
 
 /**
- * PSR-0 Compatible Class Autoloader
+ * PSR-4 Compatible Class Autoloader
  *
- * @author Mike Hall
- * @copyright 2005-2012 Digital Design Labs Ltd
+ * @author Mike Hall <mike.hall@digitaldesignlabs.com>
+ * @author Nathan Pace <nathan.pace@digitaldesignlabs.com>
+ * @copyright 2005-2015 Digital Design Labs Ltd
  * @param string $className - The class to load
  * @return void
  */
@@ -23,8 +24,8 @@ spl_autoload_register(function ($className) {
 
     // Derive the path from the class name
     $broken = explode('\\', $className);
-    $sourceFilename = str_replace('_', DIRECTORY_SEPARATOR, array_pop($broken)) . '.php';
-    $sourcePath     = implode(DIRECTORY_SEPARATOR, $broken);
+    $sourceFilename = array_pop($broken) . '.php';
+    $sourcePath = implode(DIRECTORY_SEPARATOR, $broken);
 
     // Raw classes (without namespace support) live in a folder called classes
     if (empty($sourcePath)) {
