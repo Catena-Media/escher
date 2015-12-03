@@ -10,241 +10,203 @@
 
 namespace TDM\Escher;
 
+// Load required classes
+use GuzzleHttp\Client;
+
 /**
- * CouchDB
+ * Interface to CouchDB databases
  *
  * @author Mike Hall
- * @copyright 2013 Digital Design Labs Ltd
- * @todo A ground-up rewrite, as this code is shocking
+ * @copyright 2015 Digital Design Labs Ltd
  */
 
 class CouchDB extends Singleton
 {
-    private $http;
-    private $baseUrl;
+    /**
+     * Keeps a copy of the Guzzle client
+     * @var Guzzle\Client
+     * @access private
+     */
+    private $guzzle;
 
+    /**
+     * Constructor. Creates a Guzzle object, with the BaseURI set to whatever
+     * is in the Escher settings file for the couch host, or whatever is passed as a param instead.
+     * @param string $base - The base path to use (optional)
+     * @access protected
+     */
     protected function __construct($base = null)
     {
-        $this->http = new CreateRequest();
-        $this->baseUrl = $base ?: (new Settings())->couchdb["host"];
+        $settings = Settings::instance()->couchdb;
+        $this->guzzle = new Client([
+            "base_uri" => $base ?: $settings["host"]
+        ]);
     }
 
-    private function parseHeaders($raw)
+    /**
+     * Process response objects from guzzle
+     * @param Guzzle\Http\Message\Response $response - a guzzle response
+     * @return array
+     */
+    private function parse($response)
     {
-        $headers = array();
-        foreach ($raw as $header) {
-            list($field, $value) = explode(': ', $header);
-            $headers[$field] = $value;
-        }
+        // Status code is important, we need to check this
+        $statusCode = $response->getStatusCode();
+        return array(
 
-        return $headers;
+            // Any 200-ish status code is considered OK
+            "ok" => $statusCode >= 200 && $statusCode <= 299,
+
+            // Return the interesting header data
+            "statusCode" => $statusCode,
+            "headers" => $response->getHeaders(),
+
+            // The body should always be json
+            "body" => json_decode($response->getBody(), YES),
+        );
     }
 
-    private function parseStatus($raw)
+    /**
+     * Performs an HTTP request with the specified parameters
+     * @param string $method - The HTTP verb to use
+     * @param string $path - The path to request
+     * @param array $options - The options for this request
+     * @return array - The parsed response
+     */
+    private function request($method, $path, array $options)
     {
-        if (preg_match('/^HTTP\/1\.[01] ([0-9]{3}) /', $raw, $match)) {
-            return $match[1];
-        }
-        return 500;
-    }
-
-    private function handleReply($reply)
-    {
-        // Check for errors
-        if (is_numeric($reply) && $reply < 0) {
-            switch ($reply) {
-                case CreateRequest::SOCKET_TIMED_OUT:
-                    $statusCode = 504;
-                    break;
-                case CreateRequest::CANNOT_OPEN_SOCKET:
-                    $statusCode = 503;
-                    break;
-                default:
-                    $statusCode = 500;
-                    break;
+        try {
+            $response = $this->guzzle->request(strtoupper($method), $path, $options);
+        } catch (\Exception $e) {
+            if ($e->hasResponse() === NO) {
+                return ["ok" => false, "status" => 500, "body" => "Internal Server Error"];
             }
-
-            // Default variables
-            $headers = [];
-            $body    = null;
-
-        } else {
-
-            // break into headers/body
-            @list($headers, $body) = explode("\r\n\r\n", $reply, 2);
-
-            // Split the headers
-            $headers = explode("\r\n", $headers);
-
-            // Decode the body
-            $body = json_decode($body, YES);
-
-            // Parse out the status code
-            $statusCode = $this->parseStatus(array_shift($headers));
+            $response = $e->getResponse();
         }
+        return $this->parse($response);
+    }
 
-        // Process the remaining headers
-        $headers = array_merge(
+    /**
+     * Gets a Couch document from the specified path
+     * @param string $path - The resource to fetch
+     * @param array $headers - Any additional headers to supply (optional)
+     * @param array $options - Any options to pass to Guzzle (optional)
+     * @return array - The parsed response
+     */
+    public static function get($path, array $headers = [], array $options = [])
+    {
+        $couch = self::instance();
+        return $couch->request("GET", $path, array_merge($options, ["headers" => $headers]));
+    }
+
+    /**
+     * Gets a Couch View from the specified location
+     * @param string $db - The database name (supply an empty string if this is in the base path already)
+     * @param string $design - The name of the design document
+     * @param string $view - The name of the view within the design document
+     * @param array $query - Any parameters to pass on the query string (optional)
+     * @param array $headers - Any additional headers to supply (optional)
+     * @param array $options - Any options to pass to Guzzle (optional)
+     * @return array - The parsed response
+     */
+    public static function view($db, $design, $view, array $query = [], array $headers = [], array $options = [])
+    {
+        $uri = sprintf(
+            "%s/_design/%s/_view/%s?%s",
+            $db,
+            urlencode($design),
+            urlencode($view),
+            http_build_query(
+                Utils::arrayMap($query, "json_encode")
+            )
+        );
+
+        return self::get($uri, $headers, $options);
+    }
+
+    /**
+     * Deletes the resource at the specified path
+     * @param string $path - The resource to delete
+     * @param string $rev - The latest revision of the resource
+     * @param array $headers - Any additional headers to supply (optional)
+     * @param array $options - Any options to pass to Guzzle (optional)
+     * @return array - The parsed response
+     */
+    public static function delete($path, $rev, array $headers = [], $options = [])
+    {
+        $couch = self::instance();
+        $uri = $path . "?" . http_build_query(["rev" => $rev]);
+        return $couch->request("DELETE", $uri, array_merge($options, ["headers" => $headers]));
+    }
+
+    /**
+     * Posts data to the database
+     * @param string $db - The database name (supply an empty string if this is in the base path already)
+     * @param array $params - The data to post
+     * @param array $headers - Any additional headers to supply (optional)
+     * @param array $options - Any options to pass to Guzzle (optional)
+     * @return array - The parsed response
+     */
+    public static function post($path, array $params, array $headers = [], array $options = [])
+    {
+        $couch = self::instance();
+
+        $options = array_merge(
+            $options,
             array(
-                'Status' => $statusCode,
-            ),
-            $this->parseHeaders($headers)
+                "headers" => $headers,
+                "json" => $params,
+            )
         );
 
-        // Format into a reply object
-        $reply = array(
-            'status'  => ($statusCode{0} == 2) ? 'ok' : 'fail',
-            'headers' => $headers,
-            'body'    => isset($body['rows']) ? $body['rows'] : $body,
-        );
-
-        // Return
-        return $reply;
+        return $couch->request("POST", $path, $options);
     }
 
-    public static function get($resource, Array $headers = [], Array $options = [])
+    /**
+     * Puts data to the database
+     * @param string $db - The database name (supply an empty string if this is in the base path already)
+     * @param array $params - The data to put
+     * @param array $headers - Any additional headers to supply (optional)
+     * @param array $options - Any options to pass to Guzzle (optional)
+     * @return array - The parsed response
+     */
+    public static function put($path, array $params, array $headers = [], array $options = [])
     {
-        // Get an instance
         $couch = self::instance();
 
-        // Define the URL for the request
-        $url = $couch->baseUrl . $resource;
-
-        // Merge in default options
         $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
+            $options,
+            array(
+                "headers" => $headers,
+                "json" => $params,
+            )
         );
 
-        // Process and return
-        $reply = $couch->http->get($url, $headers, $options);
-
-        return $couch->handleReply($reply);
+        return $couch->request("PUT", $path, $options);
     }
 
-    public static function view($resource, $design, $view, $params = [], Array $headers = [], Array $options = [])
+    /**
+     * Removes Couch meta data from the document
+     * @param array $doc - The document to clean
+     * @return array - The cleaned document
+     */
+    public static function cleanup(array $doc)
     {
-        // Get an instance
-        $couch = self::instance();
-
-        // Define the URL for the request
-        $url = $couch->baseUrl . $resource . "/_design/" . urlencode($design) . "/_view/" . urlencode($view);
-        $url .= '?' . http_build_query(array_map("json_encode", $params));
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
-        // Process and return
-        $reply = $couch->http->get($url, $headers, $options);
-        return $couch->handleReply($reply);
+        return Utils::arrayOmit($doc, ["_id", "_rev", "type"]);
     }
 
-    public static function delete($resource, Array $headers = [], Array $options = [])
+    /**
+     * Removes Couch meta data from output of a view
+     * @param array $doc - The list of documents to clean
+     * @return array - The cleaned documents
+     */
+    public static function cleanupView(array $docs)
     {
-        // Get an instance
-        $couch = self::instance();
-
-        // Define the URL for the request
-        $url = $couch->baseUrl . $resource;
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
-        // Process and return
-        $reply = $couch->http->delete($url, $headers, $options);
-
-        return $couch->handleReply($reply);
-    }
-
-    public static function post($resource, $data = [], Array $headers = [], Array $options = [])
-    {
-        // Get an instance
-        $couch = self::instance();
-
-        // Define the URL for the request
-        $url = $couch->baseUrl . $resource;
-
-        // If the data is an array, JSON-encode it
-        if (!is_scalar($data)) {
-            $data = json_encode($data);
-            $headers['Content-Type'] = 'application/json';
-        }
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
-        // Process and return
-        $reply = $couch->http->post($url, $data, $headers, $options);
-
-        return $couch->handleReply($reply);
-    }
-
-    public static function put($resource, $data = [], Array $headers = [], Array $options = [])
-    {
-        // Get an instance
-        $couch = self::instance();
-
-        // Define the URL for the request
-        $url = $couch->baseUrl . $resource;
-
-        // If the data is an array, JSON-encode it
-        if (!is_scalar($data)) {
-            $data = json_encode($data);
-            $headers['Content-Type'] = 'application/json';
-        }
-
-        // Merge in default options
-        $options = array_merge(
-            [
-                'max_redirects' => 0,
-            ],
-            $options
-        );
-
-        // Process and return
-        $reply = $couch->http->put($url, $data, $headers, $options);
-
-        return $couch->handleReply($reply);
-    }
-
-    public static function cleanupDocument($document)
-    {
-        unset($document["_id"], $document["_rev"], $document["type"]);
-        return $document;
-    }
-
-    public static function cleanupView($documents)
-    {
-        return array_map(
-            function ($document) {
-
-                // If this is an include docs view, only look at the document
-                if (isset($document["doc"])) {
-                    $document = $document["doc"];
-                }
-
-                // Clean up the CouchDB meta data
-                return self::cleanupDocument($document);
-
-            },
-            $documents
-        );
+        return Utils::arrayMap($docs, function ($doc) {
+            if (isset($doc["doc"]) === YES) {
+                $doc = $doc["doc"];
+            }
+            return self::cleanup($doc);
+        });
     }
 }

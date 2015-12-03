@@ -18,7 +18,6 @@ namespace TDM\Escher;
  * @author Mike Hall
  * @copyright 2000-2013 Digital Design Labs Ltd
  */
-
 class EmailAddress
 {
     public static function isValid($email)
