@@ -17,7 +17,7 @@ namespace TDM\Escher;
  */
 class Console
 {
-    public static function createPresenter($args)
+    public static function createController($args)
     {
         $validName = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/';
 
@@ -37,7 +37,7 @@ class Console
 
         $template = Template::instance();
 
-        $template->loadTemplate(ROOTDIR . "/templates/.escher/presenter.class", "Class");
+        $template->loadTemplate(ROOTDIR . "/templates/.escher/controller.class", "Class");
 
         $template->assign(array(
             "Vendor" => $vendor,
@@ -50,7 +50,7 @@ class Console
         ), "Class");
 
         // Where should this file go?
-        $filename = ROOTDIR . "/lib/classes/" . implode("/", [$vendor, $package, "Presenters", $className]) . ".php";
+        $filename = ROOTDIR . "/lib/classes/" . implode("/", [$vendor, $package, "Controllers", $className]) . ".php";
         $dirname  = dirname($filename);
         if (!is_dir($dirname)) {
             mkdir($dirname, null, YES);

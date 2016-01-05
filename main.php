@@ -9,15 +9,18 @@
 // Load Escher
 require "escher.php";
 
+use \TDM\Escher\Router;
+use \TDM\Escher\CurrentRequest;
+
 // If the URI finishes with a /, redirect to one without - unless its the root
 if ($_SERVER["DOCUMENT_URI"] !== "/" && substr($_SERVER["DOCUMENT_URI"], -1) === "/") {
     $redirectTo = implode("?", array_filter(array(rtrim($_SERVER["DOCUMENT_URI"], "/"), $_SERVER["QUERY_STRING"])));
-    TDM\Escher\CurrentRequest::redirectWithStatusCode(301, $redirectTo);
+    CurrentRequest::redirectWithStatusCode(301, $redirectTo);
 }
 
 // Set up the routing table
-$router = new TDM\Escher\Router();
-$router->map('/', 'YourCompany\YourProject\Presenters\Homepage::request');
+$router = new Router();
+$router->map('/', 'YourCompany\YourProject\Controllers\Homepage::request');
 
 // Identify how to route this request
 $route = $router->route($_SERVER["REQUEST_METHOD"], $_SERVER["DOCUMENT_URI"]);

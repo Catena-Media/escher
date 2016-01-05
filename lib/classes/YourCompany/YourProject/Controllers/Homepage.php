@@ -2,25 +2,21 @@
 
 /**
  * Your Project
- *
- * @copyright 2015 YourCompany
+ * @copyright YourCompany
  * @package \YourCompany\YourProject
  */
 
-namespace YourCompany\YourProject\Presenters;
+namespace YourCompany\YourProject\Controllers;
 
-use \TDM\Escher as Escher;
-use \YourCompany\YourProject as YourProject;
+use \TDM\Escher;
+use \YourCompany\YourProject;
 
 /**
  * Homepage
- *
  * Handles requests for the homepage
- *
- * @copyright 2015 Your Company
  * @author You
  */
-class Homepage extends Escher\Presenter
+class Homepage extends Escher\Controller
 {
     public static function request()
     {
