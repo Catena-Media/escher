@@ -2,8 +2,7 @@
 
 /**
  * Your Project
- *
- * @copyright 2015 YourCompany
+ * @copyright YourCompany
  * @package \YourCompany\YourProject
  */
 
@@ -11,15 +10,12 @@ namespace YourCompany\YourProject\Views;
 
 /**
  * Displays the homepage
- *
- * @copyright 2015 Your Company
  * @author You
  */
 class Homepage extends Main
 {
     /**
      * Load the homepage view
-     *
      * @return string - The namespace of the view
      */
     protected function loadView()

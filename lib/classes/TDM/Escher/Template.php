@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
@@ -12,16 +11,12 @@ namespace TDM\Escher;
 
 /**
  * Template
- *
- * A really simple page templater
- *
+ * A logic-free page templater
  * @author Richard Mann
  * @author James Dempster
  * @author Mike Hall
- * @copyright 2006-2014 Digital Design Labs Ltd
  * @todo Rework the error handling, it's shocking.
  */
-
 class Template extends Singleton
 {
     /**

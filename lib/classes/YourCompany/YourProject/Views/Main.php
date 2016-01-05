@@ -2,19 +2,16 @@
 
 /**
  * Your Project
- *
- * @copyright 2015 YourCompany
+ * @copyright YourCompany
  * @package \YourCompany\YourProject
  */
 
 namespace YourCompany\YourProject\Views;
 
-use \TDM\Escher as Escher;
+use \TDM\Escher;
 
 /**
  * Renders the common site elements
- *
- * @copyright 2015 Your Company
  * @author You
  */
 class Main extends Escher\View
@@ -28,7 +25,6 @@ class Main extends Escher\View
 
     /**
      * Load and set up the view
-     *
      * @return string - The namespace of the created view
      */
     protected function loadView()
@@ -50,11 +46,10 @@ class Main extends Escher\View
 
     /**
      * Set the meta data for this page
-     *
      * @param array $meta - An array of meta data, expect ["title" => "...," "description" => "..."]
      * @return void
      */
-    public function setMetaData(Array $meta)
+    public function setMetaData(array $meta)
     {
         $this->template->assign($meta, "Main:Meta");
     }

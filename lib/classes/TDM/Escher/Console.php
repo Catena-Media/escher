@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
@@ -12,14 +11,10 @@ namespace TDM\Escher;
 
 /**
  * Console
- *
  * Handles requests coming from the console
- * TODO: Make this not terrible.
- *
+ * @todo Make this not terrible.
  * @author Mike Hall
- * @copyright 2014 Digital Design Labs Ltd
  */
-
 class Console
 {
     public static function createPresenter($args)

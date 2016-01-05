@@ -2,8 +2,7 @@
 
 /**
  * Your Project
- *
- * @copyright 2014 YourCompany
+ * @copyright YourCompany
  * @package \YourCompany\YourProject
  */
 

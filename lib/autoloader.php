@@ -1,19 +1,16 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 /**
  * PSR-4 Compatible Class Autoloader
- *
- * @author Mike Hall <mike.hall@digitaldesignlabs.com>
- * @author Nathan Pace <nathan.pace@digitaldesignlabs.com>
- * @copyright 2005-2015 Digital Design Labs Ltd
+ * @author Mike Hall
+ * @author Nathan Pace
  * @param string $className - The class to load
  * @return void
  */

@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
@@ -12,14 +11,16 @@ namespace TDM\Escher;
 
 /**
  * EmailAddress
- *
  * For working with email addresses. Honestly.
- *
  * @author Mike Hall
- * @copyright 2000-2013 Digital Design Labs Ltd
  */
 class EmailAddress
 {
+    /**
+     * Validate an email address
+     * @param string $email
+     * @return boolean
+     */
     public static function isValid($email)
     {
         // Check for vaid format

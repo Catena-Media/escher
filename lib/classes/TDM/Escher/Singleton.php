@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
@@ -12,15 +11,11 @@ namespace TDM\Escher;
 
 /**
  * Singleton
- *
  * Abstract class for creating singletons. Extend a class from this
  * abstract class, and then use $instance = YourClass::instance() to get
  * a singleton instance of that class.
- *
  * @author Mike Hall
- * @copyright 2014 Digital Design Labs Ltd
  */
-
 abstract class Singleton
 {
     /**

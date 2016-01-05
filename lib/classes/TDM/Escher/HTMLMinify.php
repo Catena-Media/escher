@@ -1,33 +1,26 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
 
 /**
- * HTML
- *
+ * HTMLMinify
  * Adapted from Minify by Stephen Clay.
  * This is a heavy regex-based removal of whitespace, unnecessary comments and
  * tokens. IE conditional comments are preserved.
- *
  * @author Stephen Clay <steve@mrclay.org>
  * @copyright Copyright (c) 2008 Ryan Grove <ryan@wonko.com>
  * @copyright Copyright (c) 2008 Steve Clay <steve@mrclay.org>
  * @license https://code.google.com/p/minify/source/browse/LICENSE.txt (BSD-3)
  */
-
 class HTMLMinify
 {
     /**
      * "Minify" an HTML page
-     *
      * @param string $html
      * @return string
      */

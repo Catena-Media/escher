@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
@@ -12,13 +11,9 @@ namespace TDM\Escher;
 
 /**
  * Timer
- *
- * A really simple page timer
- *
+ * A basic page timer
  * @author Scott Culverhouse
- * @copyright 2014 Digital Design Labs Ltd
  */
-
 class Timer
 {
     private $start;

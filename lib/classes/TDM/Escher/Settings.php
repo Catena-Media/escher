@@ -1,9 +1,8 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
@@ -12,14 +11,10 @@ namespace TDM\Escher;
 
 /**
  * Settings
- *
  * This class will import into itself all the keys it finds in settings.ini
  * file that it finds at the root level of the application.
- *
  * @author Mike Hall
- * @copyright 2014 Digital Design Labs Ltd
  */
-
 class Settings extends Singleton
 {
     public function __construct()

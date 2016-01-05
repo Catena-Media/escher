@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Escher Framework v2.0
- *
- * @copyright 2000-2015 Digital Design Labs Ltd
+ * Escher Framework
+ * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
  * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
+
 namespace TDM\Escher;
 
 /**
  * ProcessManager
  * A Process Manager for PHP batch scripts, with support for locking and logging
  * @author Mike Hall
- * @copyright 2005-2014 Digital Design Labs Ltd
  * @todo Needs a complete overall, makes some unwarranted assumptions about writable paths
  */
 class ProcessManager
