@@ -21,7 +21,7 @@ class Settings extends Singleton
     {
         // Read the settings file
         $settingsFile = ROOTDIR . '/settings.ini';
-        if (!is_readable($settingsFile)) {
+        if (is_readable($settingsFile) === NO) {
             trigger_error("Expected settings file at " . $settingsFile);
             return;
         }
