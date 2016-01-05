@@ -5,7 +5,6 @@
     // Core gulp stuff
 var gulp = require("gulp-help")(require("gulp")),
     gutil = require("gulp-util"),
-    bump = require("gulp-bump"),
     concat = require("gulp-concat"),
     noop = require("lodash").noop,
     stream = require("vinyl-source-stream"),
@@ -83,20 +82,6 @@ gulp.task("scripts", "Rebuild the javascript.", function () {
     options: {
         production: "  production ready"
     }
-});
-
-// Increment version numbers
-gulp.task("bump", "Increment version number.", function () {
-
-    var version;
-
-    if (gutil.env.version) {
-        version = {version: gutil.env.version};
-    }
-
-    return gulp.src(["./package.json", "./bower.json"])
-        .pipe(bump(version))
-        .pipe(gulp.dest("./"));
 });
 
 // Rebuild everything

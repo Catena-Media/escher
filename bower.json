@@ -1,6 +1,5 @@
 {
   "name": "your-project",
-  "version": "0.0.0",
   "private": true,
   "devDependencies": {
     "jquery": "~2.1.4",
