@@ -13,7 +13,7 @@ var gulp = require("gulp-help")(require("gulp")),
 
     // Stylesheet stuff
     sass = require("gulp-sass"),
-    minifycss = require("gulp-minify-css"),
+    cssnano = require("gulp-cssnano"),
     autoprefixer = require("gulp-autoprefixer"),
 
     // Javascript stuff
@@ -30,7 +30,7 @@ gulp.task("styles", "Rebuild the SASS.", function () {
         prefix;
 
     if (gutil.env.production) {
-        squish = minifycss();
+        squish = cssnano();
     } else {
         sassConfig.errLogToConsole = true;
         sassConfig.sourceComments = "map";
