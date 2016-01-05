@@ -34,6 +34,6 @@ class EmailAddress
         // email (I think DNS falls back to A records where there is no MX?)
         // But I think it's rare enough not to worry about it.
         list ($local, $domain) = explode("@", $email);
-        return dns_get_mx($domain, $hosts);
+        return !!dns_get_mx($domain, $hosts);
     }
 }
