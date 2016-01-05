@@ -26,13 +26,12 @@ $router->map('/', 'YourCompany\YourProject\Controllers\Homepage::request');
 $route = $router->route($_SERVER["REQUEST_METHOD"], $_SERVER["DOCUMENT_URI"]);
 
 // If this request is not routable, call a 404
-if (!is_callable($route)) {
-    TDM\Escher\CurrentRequest::returnCode(404);
-}
-
-try {
-    // Route down to a presenter
-    echo call_user_func($route);
-} catch (\Exception $ignore) {
-    TDM\Escher\CurrentRequest::returnCode(500);
+if (is_callable($route) === YES) {
+    try {
+        echo call_user_func($route);
+    } catch (\Exception $ignore) {
+        CurrentRequest::returnCode(500);
+    }
+} else {
+    CurrentRequest::returnCode(404);
 }
