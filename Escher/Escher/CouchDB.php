@@ -76,7 +76,7 @@ class CouchDB extends Singleton
             $response = $this->guzzle->request(strtoupper($method), $path, $options);
         } catch (\Exception $e) {
             if ($e->hasResponse() === NO) {
-                return ["ok" => false, "status" => 500, "body" => "Internal Server Error"];
+                return ["ok" => NO, "status" => 500, "body" => "Internal Server Error"];
             }
             $response = $e->getResponse();
         }

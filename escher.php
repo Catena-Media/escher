@@ -21,9 +21,6 @@ define("NO", false);
  */
 define("ROOTDIR", __DIR__);
 
-// Include the class autoloader
-require ROOTDIR . "/lib/autoloader.php";
-
 // If there is a local configuraton file defined for this project
 // (which there usually should be) then include it.
 if (is_readable(ROOTDIR . "/localconfig.php")) {

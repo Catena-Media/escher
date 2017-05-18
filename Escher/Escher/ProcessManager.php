@@ -43,7 +43,7 @@ class ProcessManager
      * @var bool
      * @access public
      */
-    public static $verbose = false;
+    public static $verbose = NO;
 
     /**
      * Constructor
