@@ -21,6 +21,9 @@ define("NO", false);
  */
 define("ROOTDIR", __DIR__);
 
+// Include the Escher autoloader
+require ROOTDIR . "/escher/autoload.php";
+
 // If there is a local configuraton file defined for this project
 // (which there usually should be) then include it.
 if (is_readable(ROOTDIR . "/localconfig.php")) {
