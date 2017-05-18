@@ -20,9 +20,9 @@ class Settings extends Singleton
     public function __construct()
     {
         // Read the settings file
-        $settingsFile = ROOTDIR . '/settings.ini';
+        $settingsFile = ROOTDIR . "/../settings.ini";
         if (is_readable($settingsFile) === NO) {
-            trigger_error("Expected settings file at " . $settingsFile);
+            trigger_error("Expected settings file at {$settingsFile}");
             return;
         }
 

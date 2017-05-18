@@ -25,7 +25,7 @@ spl_autoload_register(function ($className) {
     $sourcePath = implode(DIRECTORY_SEPARATOR, $broken);
 
     // Include the file. We're done.
-    $check = ROOTDIR . "/lib/class/{$sourcePath}/{$sourceFilename}";
+    $check = ROOTDIR . "/../lib/class/{$sourcePath}/{$sourceFilename}";
     if (is_readable($check)) {
         include $check;
     }
