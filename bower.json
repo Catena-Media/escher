@@ -1,8 +1,0 @@
-{
-  "name": "your-project",
-  "private": true,
-  "devDependencies": {
-    "jquery": "~2.1.4",
-    "picturefill": "~3.0.1"
-  }
-}

@@ -17,18 +17,18 @@
 spl_autoload_register(function ($className) {
 
     // Lose the leading slash
-    $className = ltrim($className, '\\');
+    $className = ltrim($className, "\\");
 
     // Derive the path from the class name
-    $broken = explode('\\', $className);
-    $sourceFilename = array_pop($broken) . '.php';
+    $broken = explode("\\", $className);
+    $sourceFilename = array_pop($broken) . ".php";
     $sourcePath = implode(DIRECTORY_SEPARATOR, $broken);
 
-    // Raw classes (without namespace support) live in a folder called classes
+    // Raw classes (without namespace support) live in a folder called class
     if (empty($sourcePath)) {
-        $check = ROOTDIR . '/lib/classes/' . $sourceFilename;
+        $check = ROOTDIR . "/lib/class/{$sourceFilename}";
     } else {
-        $check = ROOTDIR . '/lib/classes/' . $sourcePath . '/' . $sourceFilename;
+        $check = ROOTDIR . "/lib/class/{$sourcePath}/{$sourceFilename}";
     }
 
     // Include the file. We're done.
