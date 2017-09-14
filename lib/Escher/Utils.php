@@ -18,6 +18,7 @@ namespace TDM\Escher;
 class Utils
 {
     /**
+     * arrayMap()
      * Apply a callback function to each element of an array
      * @param array $array
      * @param callable $callback
@@ -29,6 +30,7 @@ class Utils
     }
 
     /**
+     * arrayPick()
      * Discard all but the keys named in the second parameter
      * @param array $array
      * @param mixed $keys
@@ -43,6 +45,7 @@ class Utils
     }
 
     /**
+     * arrayOmit()
      * Discard the keys named in the second parameter
      * @param array $array
      * @param mixed $keys
@@ -57,6 +60,7 @@ class Utils
     }
 
     /**
+     * arraySlice()
      * Return a portion of the array, starting at index $start and continuing for $length elements
      * @param array $array
      * @param int $start - The initial offset
@@ -70,6 +74,7 @@ class Utils
     }
 
     /**
+     * arrayReduce()
      * Reduce an array to a scalar value. Simple wrapper around the standard function
      * @param array $array
      * @param callable $callback
@@ -82,7 +87,8 @@ class Utils
     }
 
     /**
-     * Discard array elements, based upon a callback function
+     * arrayFilter()
+     * Discard array elements, based upon a callback function. Does not maintain key-value association.
      * @param array $array
      * @param callable $callback, return truthy to keep
      * @return array
@@ -90,11 +96,11 @@ class Utils
     public static function arrayFilter(array $array, $callback)
     {
         $array = array_filter($array, $callback);
-        sort($array);
-        return $array;
+        return array_values($array);
     }
 
     /**
+     * inArray()
      * Does the needle exist in the haystack?
      * @param array $haystack
      * @param mixed $needle
@@ -106,6 +112,7 @@ class Utils
     }
 
     /**
+     * arrayFlatten()
      * Flatten an array-of-arrays down into a single linear array.
      * Optional $deep parameter determines whether to recurse into sub arrays, or just do a single pass
      * @param array $array
