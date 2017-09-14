@@ -131,4 +131,55 @@ class Utils
 
         return call_user_func_array("array_merge", $array);
     }
+
+    /**
+     * arrayFind()
+     * Find the first array element which matches the supplied callback
+     * @param array $array
+     * @param callable $callback
+     * @return mixed matching element, or NULL for no match
+     */
+    public static function arrayFind(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if (call_user_func($callback, $value, $key, $array)) {
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * arrayEvery()
+     * Returns true if every element of the array matches a supplied callback
+     * @param array $array
+     * @param callable $callback
+     * @return boolean
+     */
+    public static function arrayEvery(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if (!call_user_func($callback, $value, $key, $array)) {
+                return NO;
+            }
+        }
+        return YES;
+    }
+
+    /**
+     * arraySome()
+     * Returns true if at least one element of the array matches a supplied callback
+     * @param array $array
+     * @param callable $callback
+     * @return boolean
+     */
+    public static function arraySome(array $array, callable $callback)
+    {
+        foreach ($array as $key => $value) {
+            if (call_user_func($callback, $value, $key, $array)) {
+                return YES;
+            }
+        }
+        return NO;
+    }
 }
