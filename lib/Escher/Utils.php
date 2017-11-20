@@ -26,7 +26,8 @@ class Utils
      */
     public static function arrayMap(array $array, $callback)
     {
-        return array_map($callback, $array);
+        trigger_error("Deprecated function; use Collection::map instead", E_USER_NOTICE);
+        return Collection::map($array, $callback);
     }
 
     /**
@@ -38,10 +39,8 @@ class Utils
      */
     public static function arrayPick(array $array, $keys)
     {
-        if (is_scalar($keys)) {
-            $keys = array($keys);
-        }
-        return array_intersect_key($array, array_flip($keys));
+        trigger_error("Deprecated function; use Collection::pick instead", E_USER_NOTICE);
+        return Collection::pick($array, $keys);
     }
 
     /**
@@ -53,10 +52,8 @@ class Utils
      */
     public static function arrayOmit(array $array, $keys)
     {
-        if (is_scalar($keys)) {
-            $keys = array($keys);
-        }
-        return array_diff_key($array, array_flip($keys));
+        trigger_error("Deprecated function; use Collection::omit instead", E_USER_NOTICE);
+        return Collection::omit($array, $keys);
     }
 
     /**
@@ -70,7 +67,8 @@ class Utils
      */
     public static function arraySlice(array $array, $start, $length = null, $preserve = NO)
     {
-        return array_slice($array, $start, $length, !!$preserve);
+        trigger_error("Deprecated function; use Collection::slice instead", E_USER_NOTICE);
+        return Collection::slice($array, $start, $length, $preserve);
     }
 
     /**
@@ -83,7 +81,8 @@ class Utils
      */
     public static function arrayReduce(array $array, $callback, $initial = null)
     {
-        return array_reduce($array, $callback, $initial);
+        trigger_error("Deprecated function; use Collection::reduce instead", E_USER_NOTICE);
+        return Collection::reduce($array, $callback, $initial);
     }
 
     /**
@@ -95,8 +94,8 @@ class Utils
      */
     public static function arrayFilter(array $array, $callback)
     {
-        $array = array_filter($array, $callback);
-        return array_values($array);
+        trigger_error("Deprecated function; use Collection::filter instead", E_USER_NOTICE);
+        return Collection::filter($array, $callback);
     }
 
     /**
@@ -108,7 +107,8 @@ class Utils
      */
     public static function inArray(array $haystack, $needle)
     {
-        return in_array($needle, $haystack);
+        trigger_error("Deprecated function; use Collection::has instead", E_USER_NOTICE);
+        return Collection::has($haystack, $needle);
     }
 
     /**
@@ -121,15 +121,8 @@ class Utils
      */
     public static function arrayFlatten(array $array, $deep = NO)
     {
-        if ($deep === YES) {
-            $output = array();
-            array_walk_recursive($array, function ($v) use (&$output) {
-                $output[] = $v;
-            });
-            return $output;
-        }
-
-        return call_user_func_array("array_merge", $array);
+        trigger_error("Deprecated function; use Collection::flatten instead", E_USER_NOTICE);
+        return Collection::flatten($array, $deep);
     }
 
     /**
@@ -141,12 +134,8 @@ class Utils
      */
     public static function arrayFind(array $array, callable $callback)
     {
-        foreach ($array as $key => $value) {
-            if (call_user_func($callback, $value, $key, $array)) {
-                return $value;
-            }
-        }
-        return null;
+        trigger_error("Deprecated function; use Collection::find instead", E_USER_NOTICE);
+        return Collection::find($array, $callback);
     }
 
     /**
@@ -158,12 +147,8 @@ class Utils
      */
     public static function arrayEvery(array $array, callable $callback)
     {
-        foreach ($array as $key => $value) {
-            if (!call_user_func($callback, $value, $key, $array)) {
-                return NO;
-            }
-        }
-        return YES;
+        trigger_error("Deprecated function; use Collection::every instead", E_USER_NOTICE);
+        return Collection::every($array, $callback);
     }
 
     /**
@@ -175,11 +160,7 @@ class Utils
      */
     public static function arraySome(array $array, callable $callback)
     {
-        foreach ($array as $key => $value) {
-            if (call_user_func($callback, $value, $key, $array)) {
-                return YES;
-            }
-        }
-        return NO;
+        trigger_error("Deprecated function; use Collection::some instead", E_USER_NOTICE);
+        return Collection::some($array, $callback);
     }
 }
