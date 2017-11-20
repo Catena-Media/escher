@@ -90,6 +90,9 @@ class Collection
      */
     public static function reduce(array $array, $callback, $initial = null)
     {
+        if (is_null($initial) === YES) {
+            $initial = array_shift($array);
+        }
         return array_reduce($array, $callback, $initial);
     }
 
@@ -118,6 +121,19 @@ class Collection
     public static function has(array $haystack, $needle)
     {
         return in_array($needle, $haystack);
+    }
+
+    /**
+     * hasKey()
+     * Does the needle exist as a key in the haystack?
+     *
+     * @param array $haystack
+     * @param mixed $needle
+     * @return boolean
+     */
+    public static function hasKey(array $haystack, $needle)
+    {
+        return array_key_exists($needle, $haystack);
     }
 
     /**

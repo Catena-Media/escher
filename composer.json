@@ -14,5 +14,8 @@
     },
     "autoload": {
         "psr-4": {"TDM\\": "lib"}
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4"
     }
 }
