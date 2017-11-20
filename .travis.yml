@@ -1,7 +1,7 @@
 language: php
 install:
    - composer install
-script: phpunit --bootstrap vendor/autoload.php tests
+script: vendor/bin/phpunit --bootstrap vendor/autoload.php test
 php:
   - '7.1'
   - '7.0'
