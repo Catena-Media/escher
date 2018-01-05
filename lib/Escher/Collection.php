@@ -220,4 +220,86 @@ class Collection
 
         return NO;
     }
+
+    /**
+     * sort()
+     * Sorts an array, based on the comparator supplied. This can be a callable, a string referencing
+     * a key whose value we want to be the comparator, or an array of such strings.
+     *
+     * @param array $array
+     * @param mixed $comparator
+     * @return boolean
+     */
+    public static function sort(array $array, $comparator)
+    {
+        // This sorting function will take a few kinds of arguments as the comparator.
+        // The first is a string, where the value of the array element with that key will be
+        // used to compare.  The second is a dotted-string, where the dot-notation describes
+        // a path to a nested object.  Next you can provide an array of these strings, and we
+        // will sort on each one. And finally, you can provide a custom function.
+
+        // If the user has supplied a custom function, great let's use it. If they haven't
+        // then we need to supply a default callback, which wil do the magic string/array business
+        // we have just described.
+
+        // First, convert the string notation to the array notation on the fly, so we only need to
+        // implement one of these things.
+        if (is_string($comparator) === YES) {
+            $comparator = [$comparator];
+        }
+
+        // If what we have is not a callback, then we should provide our default
+        if (is_callable($comparator) === NO) {
+            $comparator = function ($left, $right) use ($comparator) {
+
+                $cmp = 0;
+
+                foreach ($comparator as $part) {
+
+                    $path = explode(".", $part);
+
+                    $leftValue = $left;
+                    foreach ($path as $k) {
+                        $leftValue = $leftValue[$k];
+                    }
+
+                    $rightValue = $right;
+                    foreach ($path as $k) {
+                        $rightValue = $rightValue[$k];
+                    }
+
+                    if (is_scalar($leftValue) === NO) {
+                        $leftValue = json_encode($leftValue);
+                    }
+
+                    if (is_scalar($rightValue) === NO) {
+                        $rightValue = json_encode($rightValue);
+                    }
+
+                    $cmp = strcmp($leftValue, $rightValue);
+                    if ($cmp !== 0) {
+                        return $cmp;
+                    }
+                }
+
+                return $cmp;
+            };
+        }
+
+        usort($array, $comparator);
+        return array_values($array);
+    }
+
+    /**
+     * esort()
+     * Reverse sorts an array, based on the comparator supplied. The comparator is the same as in Collection::sort()
+     *
+     * @param array $array
+     * @param mixed $comparator
+     * @return boolean
+     */
+    public static function rsort(array $array, $callback)
+    {
+        return array_reverse(self::sort($array, $callback));
+    }
 }

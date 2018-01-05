@@ -172,4 +172,57 @@ final class CollectionTest extends TestCase
         });
         $this->assertEquals($result, NO);
     }
+
+    public function testSimpleSort()
+    {
+        $array = array(
+            ["date" => "2018-01-05"],
+            ["date" => "2018-01-03"],
+            ["date" => "2018-01-04"],
+        );
+
+        $result = Collection::sort($array, "date");
+
+        $this->assertEquals($result, array(
+            ["date" => "2018-01-03"],
+            ["date" => "2018-01-04"],
+            ["date" => "2018-01-05"],
+        ));
+    }
+
+    public function testMultiSort()
+    {
+        $array = array(
+            ["date" => "2018-01-04", "time" => "13:00"],
+            ["date" => "2018-01-03", "time" => "13:00"],
+            ["date" => "2018-01-04", "time" => "11:00"],
+        );
+
+        $result = Collection::sort($array, ["date", "time"]);
+
+        $this->assertEquals($result, array(
+            ["date" => "2018-01-03", "time" => "13:00"],
+            ["date" => "2018-01-04", "time" => "11:00"],
+            ["date" => "2018-01-04", "time" => "13:00"],
+        ));
+    }
+
+    public function testCustomSort()
+    {
+        $array = array(1, 2, 3, 4, 5, 6);
+
+        $result = Collection::sort($array, function ($left, $right) {
+            $leftIsEven = $left % 2 === 0;
+            $rightIsEven = $right % 2 === 0;
+            if ($leftIsEven === $rightIsEven) {
+                return $left - $right;
+            }
+            if ($leftIsEven) {
+                return -1;
+            }
+            return 1;
+        });
+
+        $this->assertEquals($result, [2, 4, 6, 1, 3, 5]);
+    }
 }
