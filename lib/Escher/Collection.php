@@ -106,6 +106,12 @@ class Collection
      */
     public static function filter(array $array, $callback)
     {
+        if (is_string($callback) === YES) {
+            $callback = function ($element) use ($callback) {
+                return empty($element[$callback]) === NO;
+            };
+        }
+
         $array = array_filter($array, $callback);
         return array_values($array);
     }

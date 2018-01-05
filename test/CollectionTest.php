@@ -83,6 +83,12 @@ final class CollectionTest extends TestCase
         $this->assertEquals($result, [3, 4, 5]);
     }
 
+    public function testSimpleFilter()
+    {
+        $result = Collection::filter([["foo" => YES], ["foo" => NO], ["foo" => YES]], "foo");
+        $this->assertEquals($result, [["foo" => YES], ["foo" => YES]]);
+    }
+
     public function testHas()
     {
         $result = Collection::has([1, 2, 3], 3);
