@@ -30,7 +30,8 @@ abstract class Singleton
         $className = get_called_class();
 
         if ($new) {
-            return new $className();
+            $newInstance = new $className();
+            return $newInstance;
         }
 
         static $instance;
