@@ -466,7 +466,7 @@ class Template extends Singleton
         $this->buildCodeBlocks($content, $codeBlock['children'][$blockName]);
 
         // Replace the code block with a place holder to identify the code block
-        $replacement = '{{' . $blockName . '}}';
+        $replacement = '{{{' . $blockName . '}}}';
         return $replacement;
     }
 
@@ -641,7 +641,7 @@ class Template extends Singleton
 
         // Strip out unused elements
         if ($this->removeUnusedNames === YES) {
-            $value = preg_replace('/{{?[\w\.]+(\[\w+\])?}}?/', '', $value);
+            $value = preg_replace('/{{{?[\w\.]+(\[\w+\])?}}}?/', '', $value);
         }
 
         // Strip out unused comments
@@ -755,7 +755,7 @@ class Template extends Singleton
                             }
 
                             $blockValue = $this->parseBlock($childCodeBlock);
-                            $find[] = '{{' . $blockName . '}}';
+                            $find[] = '{{{' . $blockName . '}}}';
                             $replace[] = $blockValue;
                         }
                     }
@@ -791,7 +791,7 @@ class Template extends Singleton
             // into the parsed code.
             foreach ($codeBlock['children'] as $blockName => $childCodeBlock) {
                 $blockValue = $this->parseBlock($childCodeBlock);
-                $find[] = '{{' . $blockName . '}}';
+                $find[] = '{{{' . $blockName . '}}}';
                 $replace[] = $blockValue;
             }
 
@@ -830,9 +830,9 @@ class Template extends Singleton
                     $variableValue = $variableValue->render();
                 }
 
-                // Variables enclosed in {{}} should be replaced raw.
+                // Variables enclosed in {{{}}} should be replaced raw.
                 $code = preg_replace_callback(
-                    '/{{(' . $variableName . ')(\\[(\\w+)\\])?}}/',
+                    '/{{{(' . $variableName . ')(\\[(\\w+)\\])?}}}/',
                     function ($matches) use ($variableValue) {
                         if (isset($matches[3])) {
                             return $this->maskReplace($matches[3], $variableValue);
@@ -843,9 +843,9 @@ class Template extends Singleton
                     $code
                 );
 
-                // Variables enclosed in {} should be escaped first.
+                // Variables enclosed in {{}} should be escaped first.
                 $code = preg_replace_callback(
-                    '/{(' . $variableName . ')(\\[(\\w+)\\])?}/',
+                    '/{{(' . $variableName . ')(\\[(\\w+)\\])?}}/',
                     function ($matches) use ($variableValue) {
                         $safeValue = htmlspecialchars($variableValue);
                         if (isset($matches[3])) {
