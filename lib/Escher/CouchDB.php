@@ -114,7 +114,7 @@ class CouchDB extends Singleton
             urlencode($design),
             urlencode($view),
             http_build_query(
-                Utils::arrayMap($query, "json_encode")
+                Collection::map($query, "json_encode")
             )
         );
 
@@ -189,7 +189,7 @@ class CouchDB extends Singleton
      */
     public static function cleanup(array $doc)
     {
-        return Utils::arrayOmit($doc, ["_id", "_rev", "type"]);
+        return Collection::omit($doc, ["_id", "_rev", "type"]);
     }
 
     /**
@@ -199,7 +199,7 @@ class CouchDB extends Singleton
      */
     public static function cleanupView(array $docs)
     {
-        return Utils::arrayMap($docs, function ($doc) {
+        return Collection::map($docs, function ($doc) {
             if (isset($doc["doc"]) === YES) {
                 $doc = $doc["doc"];
             }
