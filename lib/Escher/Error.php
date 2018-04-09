@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -12,6 +10,8 @@ namespace TDM\Escher;
 /**
  * For error handling
  * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 class Error extends \Exception
 {

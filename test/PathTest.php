@@ -10,6 +10,9 @@ use TDM\Escher\Path;
  * Tests the Collection object
  *
  * @covers Collection
+ * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 final class PathTest extends TestCase
 {

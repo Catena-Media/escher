@@ -2,13 +2,18 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
 
+/**
+ * Escher
+ * Set up the Escher environment
+ * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
+ */
 class Escher
 {
     public static function init()

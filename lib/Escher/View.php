@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -13,6 +11,8 @@ namespace TDM\Escher;
  * View
  * The View base class
  * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  * @todo Better documentation
  */
 abstract class View

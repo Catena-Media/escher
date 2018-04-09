@@ -2,20 +2,19 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
 
 /**
  * Settings
- *
  * This class will import into itself all the keys it finds in settings.ini
  * file that it finds somewhere in the directory tree above it
  *
  * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 class Settings extends Singleton
 {

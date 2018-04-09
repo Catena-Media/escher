@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -13,6 +11,8 @@ namespace TDM\Escher;
  * Timer
  * A basic page timer
  * @author Scott Culverhouse
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 class Timer
 {

@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -14,6 +12,8 @@ namespace TDM\Escher;
  * A small library for resolving paths
  *
  * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 class Path
 {

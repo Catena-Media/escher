@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -13,6 +11,8 @@ namespace TDM\Escher;
  * Router
  * A simple and hopefully nippy router
  * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  * @todo Measure performance to back up the nippy claim!
  */
 class Router

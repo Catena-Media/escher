@@ -10,6 +10,9 @@ use TDM\Escher\Collection;
  * Tests the Collection object
  *
  * @covers Collection
+ * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 final class CollectionTest extends TestCase
 {

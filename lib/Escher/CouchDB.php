@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -15,6 +13,8 @@ use GuzzleHttp\Client;
 /**
  * CouchDB
  * Interface to CouchDB databases
+ * @copyright GG.COM Ltd
+ * @license MIT
  * @author Mike Hall
  */
 class CouchDB extends Singleton

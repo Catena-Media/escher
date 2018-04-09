@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -13,6 +11,8 @@ namespace TDM\Escher;
  * CurrentRequest
  * Helper functions for dealing with this HTTP request
  * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  * @todo Better documentation
  */
 class CurrentRequest

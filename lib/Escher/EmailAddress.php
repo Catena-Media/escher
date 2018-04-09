@@ -2,9 +2,7 @@
 
 /**
  * Escher Framework
- * @copyright Digital Design Labs Ltd
  * @package \TDM\Escher
- * @license https://raw.github.com/digitaldesignlabs/escher/master/LICENSE
  */
 
 namespace TDM\Escher;
@@ -12,6 +10,8 @@ namespace TDM\Escher;
 /**
  * EmailAddress
  * For working with email addresses. Honestly.
+ * @copyright GG.COM Ltd
+ * @license MIT
  * @author Mike Hall
  */
 class EmailAddress

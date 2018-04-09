@@ -10,6 +10,9 @@ use TDM\Escher\Template;
  * Tests the Template object
  *
  * @covers Template
+ * @author Mike Hall
+ * @copyright GG.COM Ltd
+ * @license MIT
  */
 final class TemplateTest extends TestCase
 {
