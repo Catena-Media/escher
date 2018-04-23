@@ -108,14 +108,22 @@ class CouchDB extends Singleton
      */
     public static function view($db, $design, $view, array $query = [], array $headers = [], array $options = [])
     {
+        // JSON encode any parameters, with the exception of this list
+        $transparent = ["stale", "startkey_docid", "endkey_docid"];
+        $params = [];
+        foreach ($query as $key => $value) {
+            if (in_array($key, $transparent) === NO) {
+                $value = json_encode($value);
+            }
+            $params[$key] = $value;
+        }
+
         $uri = sprintf(
             "%s/_design/%s/_view/%s?%s",
             $db,
             urlencode($design),
             urlencode($view),
-            http_build_query(
-                Collection::map($query, "json_encode")
-            )
+            http_build_query($params)
         );
 
         return self::get($uri, $headers, $options);
